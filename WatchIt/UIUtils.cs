@@ -30,6 +30,62 @@ namespace WatchIt
             return label;
         }
 
+        public static UISprite CreateSprite(UIComponent parent, string name, string spriteName)
+        {
+            UISprite sprite = parent.AddUIComponent<UISprite>();
+            sprite.name = name + "Sprite";
+            sprite.spriteName = spriteName;
+
+            return sprite;
+        }
+
+        public static UISprite CreateSprite(UIComponent parent, string name, UITextureAtlas atlas, string spriteName)
+        {
+            UISprite sprite = parent.AddUIComponent<UISprite>();
+            sprite.name = name + "Sprite";
+            sprite.atlas = atlas;
+            sprite.spriteName = spriteName;
+
+            return sprite;
+        }
+
+        public static UIButton CreateButton(UIComponent parent, string name, string spriteName)
+        {
+            UIButton button = parent.AddUIComponent<UIButton>();
+            button.name = name + "Button";
+
+            button.normalBgSprite = spriteName + "Normal";
+            button.hoveredBgSprite = spriteName + "Hovered";
+            button.pressedBgSprite = spriteName + "Pressed";
+            button.disabledBgSprite = spriteName + "Disabled";
+
+
+            return button;
+        }
+
+        public static UIButton CreateButton(UIComponent parent, string name, UITextureAtlas atlas, string spriteName)
+        {
+            UIButton button = parent.AddUIComponent<UIButton>();
+            button.name = name + "Button";
+            button.atlas = atlas;
+
+            button.normalBgSprite = spriteName + "Normal";
+            button.hoveredBgSprite = spriteName + "Hovered";
+            button.pressedBgSprite = spriteName + "Pressed";
+            button.disabledBgSprite = spriteName + "Disabled";
+
+            return button;
+        }
+
+        public static UIDragHandle CreateDragHandle(UIComponent parent)
+        {
+            UIDragHandle dragHandle = parent.AddUIComponent<UIDragHandle>();
+            dragHandle.name = "DragHandle";
+            dragHandle.target = parent;
+
+            return dragHandle;
+        }
+
         public static UILabel CreateMenuPanelTitle(UIComponent parent, string title)
         {
             UILabel label = parent.AddUIComponent<UILabel>();
@@ -69,43 +125,6 @@ namespace WatchIt
             dragHandle.target = parent;
 
             return dragHandle;
-        }
-
-        public static UISprite CreateWatchSprite(UIComponent parent, string name, int index, UITextureAtlas atlas)
-        {
-            UISprite sprite = parent.AddUIComponent<UISprite>();
-            sprite.name = name + "Sprite";
-            sprite.atlas = atlas;
-            sprite.AlignTo(parent, UIAlignAnchor.TopRight);
-            sprite.size = new Vector2(34f, 34f);
-            sprite.relativePosition = new Vector3(-0.5f, (34f * index) - 0.5f);
-            sprite.isInteractive = false;
-
-            return sprite;
-        }
-
-        public static UIButton CreateWatchButton(UIComponent parent, string name, int index, UITextureAtlas atlas, string spriteName, string toolTip)
-        {
-            UIButton button = parent.AddUIComponent<UIButton>();
-            button.name = name + "Button";
-            button.atlas = atlas;
-            button.tooltip = toolTip;
-            button.AlignTo(parent, UIAlignAnchor.TopRight);
-            button.size = new Vector2(33f, 33f);
-            button.relativePosition = new Vector3(0f, 34f * index);
-
-            button.normalBgSprite = "InfoIconBaseNormal";
-            button.hoveredBgSprite = "InfoIconBaseHovered";
-            button.pressedBgSprite = "InfoIconBasePressed";
-            button.disabledBgSprite = "InfoIconBaseDisabled";
-
-            button.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
-            button.normalFgSprite = spriteName;
-            button.hoveredFgSprite = spriteName;
-            button.pressedFgSprite = spriteName;
-            button.disabledFgSprite = spriteName;
-
-            return button;
         }
     }
 }

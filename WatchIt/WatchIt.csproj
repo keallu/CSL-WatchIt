@@ -95,6 +95,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Icons\Limits.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Drag.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Horizontal.png" />
+    <EmbeddedResource Include="Icons\Vertical.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\DragHover.png" />
+    <EmbeddedResource Include="Icons\HorizontalHover.png" />
+    <EmbeddedResource Include="Icons\VerticalHover.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"

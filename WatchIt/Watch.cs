@@ -12,13 +12,22 @@ namespace WatchIt
         private UISprite _sprite;
         private UIButton _button;
 
-        public void CreateWatch(UIComponent parent, string name, int index, UITextureAtlas atlas, string spriteName, string toolTip)
+        public void CreateWatch(UIComponent parent, string name, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
         {
             try
             {
                 Name = name;
 
-                _button = UIUtils.CreateWatchButton(parent, name, index, atlas, spriteName, toolTip);
+                _button = UIUtils.CreateButton(parent, name, atlas, "InfoIconBase");
+                _button.tooltip = toolTip;
+                _button.size = new Vector2(33f, 33f);
+                _button.relativePosition = verticalLayout ? new Vector3(0f, (34f * index) + 22f) : new Vector3((34f * index) + 22f, 0f);
+
+                _button.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
+                _button.normalFgSprite = spriteName;
+                _button.hoveredFgSprite = spriteName;
+                _button.pressedFgSprite = spriteName;
+                _button.disabledFgSprite = spriteName;
 
                 _button.eventClick += (component, eventParam) =>
                 {
@@ -42,7 +51,10 @@ namespace WatchIt
                     }
                 };
 
-                _sprite = UIUtils.CreateWatchSprite(parent, name, index, atlas);
+                _sprite = UIUtils.CreateSprite(parent, name, atlas, "WatchRed");
+                _sprite.size = new Vector2(34f, 34f);
+                _sprite.relativePosition = verticalLayout ? new Vector3(-0.5f, (34f * index) + 21.5f) : new Vector3((34f * index) + 21.5f, 0.5f);
+                _sprite.isInteractive = false;
             }
             catch (Exception e)
             {

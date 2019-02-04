@@ -1,6 +1,7 @@
 ﻿using ColossalFramework;
 using ColossalFramework.UI;
 using System;
+using System.Globalization;
 using UnityEngine;
 
 namespace WatchIt
@@ -90,8 +91,10 @@ namespace WatchIt
             try
             {
                 GetAmountAndCapacity(Name, out int amount, out int capacity);
-                _amount.text = amount.ToString();
-                _capacity.text = capacity.ToString();
+
+                _amount.text = string.Format(CultureInfo.CurrentCulture, "{0:0,0}", amount);
+                _capacity.text = string.Format(CultureInfo.CurrentCulture, "{0:0,0}", capacity);
+
                 _consumption.text = GetConsumption(amount, capacity).ToString() + "%";
             }
             catch (Exception e)

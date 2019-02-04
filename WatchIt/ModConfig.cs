@@ -4,6 +4,9 @@
     public class ModConfig
     {
         public bool ConfigUpdated { get; set; }
+        public float PositionX { get; set; }
+        public float PositionY { get; set; }
+        public bool VerticalLayout { get; set; } = true;
         public float RefreshInterval { get; set; } = 5.0f;
         public bool ElectricityAvailability { get; set; } = true;
         public bool WaterAvailability { get; set; } = true;
