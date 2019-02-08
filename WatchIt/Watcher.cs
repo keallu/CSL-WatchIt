@@ -1,5 +1,4 @@
-﻿using ColossalFramework.Globalization;
-using ColossalFramework.UI;
+﻿using ColossalFramework.UI;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -139,6 +138,12 @@ namespace WatchIt
                 {
                     string[] spriteNames = new string[]
                     {
+                        "CircleNormal",
+                        "CircleHovered",
+                        "CirclePressed",
+                        "RectNormal",
+                        "RectHovered",
+                        "RectPressed",
                         "Drag",
                         "Horizontal",
                         "Vertical",
@@ -157,24 +162,22 @@ namespace WatchIt
                         "University",
                         "Healthcare",
                         "Crematorium",
+                        "FireDepartment",
+                        "PoliceDepartment",
                         "Jail",
                         "Heating",
+                        "Landfill",
+                        "Health",
+                        "Cemetery",
+                        "Traffic",
+                        "Fire",
+                        "Crime",
+                        "Employment",
                         "Statistics",
                         "Limits"
                     };
 
                     _textureAtlas = ResourceLoader.CreateTextureAtlas("WatchItAtlas", spriteNames, "WatchIt.Icons.");
-
-                    UITextureAtlas defaultAtlas = ResourceLoader.GetAtlas("Ingame");
-                    Texture2D[] textures = new Texture2D[]
-                    {
-                        defaultAtlas["InfoIconBaseNormal"].texture,
-                        defaultAtlas["InfoIconBaseHovered"].texture,
-                        defaultAtlas["InfoIconBasePressed"].texture,
-                        defaultAtlas["InfoIconBaseDisabled"].texture
-                    };
-
-                    ResourceLoader.AddTexturesInAtlas(_textureAtlas, textures);
                 }
 
                 return _textureAtlas;
@@ -199,7 +202,7 @@ namespace WatchIt
                 _dragHandle = UIUtils.CreateDragHandle(_panel);
                 _dragHandle.tooltip = "Drag to move panel";
                 _dragHandle.size = new Vector2(15f, 15f);
-                _dragHandle.relativePosition = new Vector3(1f, 1f);
+                _dragHandle.relativePosition = new Vector3(3f, 3f);
                 _dragHandle.eventMouseEnter += (component, eventParam) =>
                 {
                     _dragSprite.spriteName = "DragHover";
@@ -218,7 +221,7 @@ namespace WatchIt
                 _dragSprite = UIUtils.CreateSprite(_panel, "Drag", _textureAtlas, "Drag");
                 _dragSprite.isInteractive = false;
                 _dragSprite.size = new Vector2(15f, 15f);
-                _dragSprite.relativePosition = new Vector3(1f, 1f);
+                _dragSprite.relativePosition = new Vector3(3f, 3f);
 
                 _orientationSprite = UIUtils.CreateSprite(_panel, "Orientation", _textureAtlas, "Vertical");
                 _orientationSprite.size = new Vector2(15f, 15f);
@@ -243,11 +246,11 @@ namespace WatchIt
             {
                 if (ModConfig.Instance.VerticalLayout)
                 {
-                    _panel.width = 34f;                   
+                    _panel.width = 36f;                   
 
                     _orientationSprite.tooltip = "Click to layout panel horizontally";
                     _orientationSprite.spriteName = "Horizontal";
-                    _orientationSprite.relativePosition = new Vector3(18f, 1f);
+                    _orientationSprite.relativePosition = new Vector3(18f, 3f);
                     _orientationSprite.eventMouseEnter += (component, eventParam) =>
                     {
                         _orientationSprite.spriteName = "HorizontalHover";
@@ -259,11 +262,11 @@ namespace WatchIt
                 }
                 else
                 {
-                    _panel.height = 34f;
+                    _panel.height = 36f;
 
                     _orientationSprite.tooltip = "Click to layout panel vertically";
                     _orientationSprite.spriteName = "Vertical";
-                    _orientationSprite.relativePosition = new Vector3(1f, 18f);
+                    _orientationSprite.relativePosition = new Vector3(3f, 18f);
                     _orientationSprite.eventMouseEnter += (component, eventParam) =>
                     {
                         _orientationSprite.spriteName = "VerticalHover";
@@ -307,47 +310,79 @@ namespace WatchIt
 
                 if (ModConfig.Instance.ElectricityAvailability)
                 {
-                    _watches.Add(CreateWatch("Electricity", "Electricity", Locale.Get("INFO_ELECTRICITY_AVAILABILITY")));
+                    _watches.Add(CreateWatch("Electricity", Watch.WatchType.Aspect, "Electricity", "Electricity Availability"));
                 }
                 if (ModConfig.Instance.WaterAvailability)
                 {
-                    _watches.Add(CreateWatch("Water", "Water", Locale.Get("INFO_WATER_WATERAVAILABILITY")));
+                    _watches.Add(CreateWatch("Water", Watch.WatchType.Aspect, "Water", "Water Availability"));
                 }
                 if (ModConfig.Instance.SewageAvailability)
                 {
-                    _watches.Add(CreateWatch("Sewage", "Sewage", Locale.Get("INFO_WATER_SEWAGEAVAILABILITY")));
+                    _watches.Add(CreateWatch("Sewage", Watch.WatchType.Aspect, "Sewage", "Sewage Availability"));
                 }
                 if (ModConfig.Instance.GarbageAvailability)
                 {
-                    _watches.Add(CreateWatch("Garbage", "Garbage", Locale.Get("INFO_GARBAGE_INCINERATOR")));
+                    _watches.Add(CreateWatch("Garbage", Watch.WatchType.Aspect, "Garbage", "Garbage Availability"));
                 }
                 if (ModConfig.Instance.ElementarySchoolAvailability)
                 {
-                    _watches.Add(CreateWatch("ElementarySchool", "ElementarySchool", Locale.Get("INFO_EDUCATION_AVAILABILITY1")));
+                    _watches.Add(CreateWatch("ElementarySchool", Watch.WatchType.Aspect, "ElementarySchool", "Elementary School Availability"));
                 }
                 if (ModConfig.Instance.HighSchoolAvailability)
                 {
-                    _watches.Add(CreateWatch("HighSchool", "HighSchool", Locale.Get("INFO_EDUCATION_AVAILABILITY2")));
+                    _watches.Add(CreateWatch("HighSchool", Watch.WatchType.Aspect, "HighSchool", "High School Availability"));
                 }
                 if (ModConfig.Instance.UniversityAvailability)
                 {
-                    _watches.Add(CreateWatch("University", "University", Locale.Get("INFO_EDUCATION_AVAILABILITY3")));
+                    _watches.Add(CreateWatch("University", Watch.WatchType.Aspect, "University", "University Availability"));
                 }
                 if (ModConfig.Instance.HealthcareAvailability)
                 {
-                    _watches.Add(CreateWatch("Healthcare", "Healthcare", Locale.Get("INFO_HEALTH_HEALTHCARE_AVAILABILITY")));
+                    _watches.Add(CreateWatch("Healthcare", Watch.WatchType.Aspect, "Healthcare", "Healthcare Availability"));
                 }
                 if (ModConfig.Instance.CrematoriumAvailability)
                 {
-                    _watches.Add(CreateWatch("Crematorium", "Crematorium", Locale.Get("INFO_HEALTH_CREMATORIUMAVAILABILITY")));
+                    _watches.Add(CreateWatch("Crematorium", Watch.WatchType.Aspect, "Crematorium", "Crematorium Availability"));
+                }
+                if (ModConfig.Instance.FireDepartmentAvailability)
+                {
+                    _watches.Add(CreateWatch("FireDepartment", Watch.WatchType.Aspect, "FireDepartment", "Fire Department Availability"));
+                }
+                if (ModConfig.Instance.PoliceDepartmentAvailability)
+                {
+                    _watches.Add(CreateWatch("PoliceDepartment", Watch.WatchType.Aspect, "PoliceDepartment", "Police Department Availability"));
                 }
                 if (ModConfig.Instance.JailAvailability)
                 {
-                    _watches.Add(CreateWatch("Jail", "Jail", Locale.Get("INFO_CRIME_JAIL_AVAILABILITY")));
+                    _watches.Add(CreateWatch("Jail", Watch.WatchType.Aspect, "Jail", "Jail Availability"));
                 }
                 if (ModConfig.Instance.HeatingAvailability)
                 {
-                    _watches.Add(CreateWatch("Heating", "Heating", Locale.Get("INFO_HEATING_AVAILABILITY")));
+                    _watches.Add(CreateWatch("Heating", Watch.WatchType.Aspect, "Heating", "Heating Availability"));
+                }
+                if (ModConfig.Instance.LandfillUsage)
+                {
+                    _watches.Add(CreateWatch("Landfill", Watch.WatchType.Pillar, "Landfill", "Landfill Usage"));
+                }
+                if (ModConfig.Instance.CemeteryUsage)
+                {
+                    _watches.Add(CreateWatch("Cemetery", Watch.WatchType.Pillar, "Cemetery", "Cemetery Usage"));
+                }
+                if (ModConfig.Instance.HealthAverage)
+                {
+                    _watches.Add(CreateWatch("Health", Watch.WatchType.Pillar, "Health", "Health Average"));
+                }
+                if (ModConfig.Instance.FireHazard)
+                {
+                    _watches.Add(CreateWatch("Fire", Watch.WatchType.Pillar, "Fire", "Fire Hazard"));
+                }
+                if (ModConfig.Instance.CrimeRate)
+                {
+                    _watches.Add(CreateWatch("Crime", Watch.WatchType.Pillar, "Crime", "Crime Rate"));
+                }
+                if (ModConfig.Instance.EmploymentRate)
+                {
+                    _watches.Add(CreateWatch("Employment", Watch.WatchType.Pillar, "Employment", "Employment Rate"));
                 }
 
                 int buttonIndex = _watches.Count;
@@ -356,10 +391,10 @@ namespace WatchIt
                 {
                     buttonIndex++;
 
-                    _limitsButton = UIUtils.CreateButton(_panel, "Limits", _textureAtlas, "InfoIconBase");
+                    _limitsButton = UIUtils.CreateButton(_panel, "Limits", _textureAtlas, "Circle");
                     _limitsButton.tooltip = "Game Limits";
                     _limitsButton.size = new Vector2(33f, 33f);
-                    _limitsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(0f, 34f * buttonIndex + 22f) : new Vector3(34f * buttonIndex + 22f, 0f);
+                    _limitsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(0f, 36f * buttonIndex + 22f) : new Vector3(36f * buttonIndex + 22f, 0f);
 
                     _limitsButton.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
                     _limitsButton.normalFgSprite = "Limits";
@@ -389,10 +424,10 @@ namespace WatchIt
                 {
                     buttonIndex++;
 
-                    _statisticsButton = UIUtils.CreateButton(_panel, "Statistics", _textureAtlas, "InfoIconBase");
+                    _statisticsButton = UIUtils.CreateButton(_panel, "Statistics", _textureAtlas, "Rect");
                     _statisticsButton.tooltip = "City Statistics";
                     _statisticsButton.size = new Vector2(33f, 33f);
-                    _statisticsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(0f, 34f * buttonIndex + 22f) : new Vector3(34f * buttonIndex + 22f, 0f);
+                    _statisticsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(0f, 36f * buttonIndex + 22f) : new Vector3(36f * buttonIndex + 22f, 0f);
 
                     _statisticsButton.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
                     _statisticsButton.normalFgSprite = "Statistics";
@@ -408,11 +443,11 @@ namespace WatchIt
 
                 if (ModConfig.Instance.VerticalLayout)
                 {
-                    _panel.height = 34f * ++buttonIndex + 22f;
+                    _panel.height = 36f * ++buttonIndex + 22f;
                 }
                 else
                 {
-                    _panel.width = 34f * ++buttonIndex + 22f;
+                    _panel.width = 36f * ++buttonIndex + 22f;
                 }
             }
             catch (Exception e)
@@ -421,13 +456,13 @@ namespace WatchIt
             }
         }
 
-        private Watch CreateWatch(string name, string spriteName, string toolTip)
+        private Watch CreateWatch(string name, Watch.WatchType type, string spriteName, string toolTip)
         {
             Watch watch = new Watch();
 
             try
             {
-                watch.CreateWatch(_panel, name, ModConfig.Instance.VerticalLayout, _watches.Count, _textureAtlas, spriteName, toolTip);
+                watch.CreateWatch(_panel, name, type, ModConfig.Instance.VerticalLayout, _watches.Count, _textureAtlas, spriteName, toolTip);
             }
             catch (Exception e)
             {

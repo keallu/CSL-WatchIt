@@ -8,53 +8,33 @@ namespace WatchIt
     public class Watch
     {
         public string Name { get; set; }
+        public WatchType Type { get; set; }
 
-        private UISprite _sprite;
+        public enum WatchType { Unset, Aspect, Pillar };
+
         private UIButton _button;
+        private UISprite _sprite;
 
-        public void CreateWatch(UIComponent parent, string name, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
+        public void CreateWatch(UIComponent parent, string name, WatchType type, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
         {
             try
             {
                 Name = name;
+                Type = type;
 
-                _button = UIUtils.CreateButton(parent, name, atlas, "InfoIconBase");
-                _button.tooltip = toolTip;
-                _button.size = new Vector2(33f, 33f);
-                _button.relativePosition = verticalLayout ? new Vector3(0f, (34f * index) + 22f) : new Vector3((34f * index) + 22f, 0f);
-
-                _button.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
-                _button.normalFgSprite = spriteName;
-                _button.hoveredFgSprite = spriteName;
-                _button.pressedFgSprite = spriteName;
-                _button.disabledFgSprite = spriteName;
+                if (Type == WatchType.Aspect)
+                {
+                    CreateAsAspect(parent, verticalLayout, index, atlas, spriteName, toolTip);
+                }
+                else if (Type == WatchType.Pillar)
+                {
+                    CreateAsPillar(parent, verticalLayout, index, atlas, spriteName, toolTip);
+                }
 
                 _button.eventClick += (component, eventParam) =>
                 {
-                    InfoManager infoManager = Singleton<InfoManager>.instance;
-
-                    if (infoManager != null)
-                    {
-                        InfoManager.InfoMode infoMode = InfoManager.InfoMode.None;
-                        InfoManager.SubInfoMode subInfoMode = InfoManager.SubInfoMode.None;
-
-                        GetInfoModes(name, out infoMode, out subInfoMode);
-
-                        if (infoManager.CurrentMode == infoMode && infoManager.CurrentSubMode == subInfoMode)
-                        {
-                            infoManager.SetCurrentMode(InfoManager.InfoMode.None, InfoManager.SubInfoMode.None);
-                        }
-                        else
-                        {
-                            infoManager.SetCurrentMode(infoMode, subInfoMode);
-                        }
-                    }
+                    SetInfoMode(name);
                 };
-
-                _sprite = UIUtils.CreateSprite(parent, name, atlas, "WatchRed");
-                _sprite.size = new Vector2(34f, 34f);
-                _sprite.relativePosition = verticalLayout ? new Vector3(-0.5f, (34f * index) + 21.5f) : new Vector3((34f * index) + 21.5f, 0.5f);
-                _sprite.isInteractive = false;
             }
             catch (Exception e)
             {
@@ -62,13 +42,103 @@ namespace WatchIt
             }
         }
 
+        private void CreateAsAspect(UIComponent parent, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
+        {
+            try
+            {
+                _button = UIUtils.CreateButton(parent, Name, atlas, "Circle");
+                _button.tooltip = toolTip;
+                _button.size = new Vector2(33f, 33f);
+                _button.relativePosition = verticalLayout ? new Vector3(0f, (36f * index) + 22f) : new Vector3((36f * index) + 22f, 0f);
+
+                _button.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
+                _button.normalFgSprite = spriteName;
+                _button.hoveredFgSprite = spriteName;
+                _button.pressedFgSprite = spriteName;
+
+                _sprite = UIUtils.CreateSprite(_button, Name, atlas, "WatchRed");
+                _sprite.isInteractive = false;
+                _sprite.size = new Vector2(36f, 36f);
+                _sprite.relativePosition = new Vector3(-1.5f, -1.5f);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] Watch:CreateAsAspect -> Exception: " + e.Message);
+            }
+        }
+
+        private void CreateAsPillar(UIComponent parent, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
+        {
+            try
+            {
+                _button = UIUtils.CreateButton(parent, Name, atlas, "Rect");
+                _button.tooltip = toolTip;
+                _button.size = new Vector2(33f, 33f);
+                _button.relativePosition = verticalLayout ? new Vector3(0f, (36f * index) + 22f) : new Vector3((36f * index) + 22f, 0f);
+
+                _button.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
+                _button.normalFgSprite = spriteName;
+                _button.hoveredFgSprite = spriteName;
+                _button.pressedFgSprite = spriteName;
+
+                _sprite = UIUtils.CreateSprite(_button, Name, "EmptySprite");
+                _sprite.isInteractive = false;
+                _sprite.color = new Color32(185, 221, 254, 255);
+                _sprite.fillDirection = UIFillDirection.Vertical;
+                _sprite.flip = UISpriteFlip.FlipVertical;
+                _sprite.opacity = 0.2f;
+                _sprite.size = new Vector2(27f, 27f);
+                _sprite.relativePosition = new Vector3(3f, 3f);
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] Watch:CreateAsPillar -> Exception: " + e.Message);
+            }
+        }
+
+        public void SetInfoMode(string name)
+        {
+            try
+            {
+                InfoManager infoManager = Singleton<InfoManager>.instance;
+
+                if (infoManager != null)
+                {
+                    InfoManager.InfoMode infoMode = InfoManager.InfoMode.None;
+                    InfoManager.SubInfoMode subInfoMode = InfoManager.SubInfoMode.None;
+
+                    GetInfoModes(name, out infoMode, out subInfoMode);
+
+                    if (infoManager.CurrentMode == infoMode && infoManager.CurrentSubMode == subInfoMode)
+                    {
+                        infoManager.SetCurrentMode(InfoManager.InfoMode.None, InfoManager.SubInfoMode.None);
+                    }
+                    else
+                    {
+                        infoManager.SetCurrentMode(infoMode, subInfoMode);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] Watch:SetInfoMode -> Exception: " + e.Message);
+            }
+        }
+
         public void UpdateWatch()
         {
             try
             {
-                GetCapacityAndNeed(Name, out int capacity, out int need);
-                int percentage = GetPercentage(capacity, need);
-                _sprite.spriteName = GetSpriteName(percentage);
+                int percentage = GetPercentage(Name);
+
+                if (Type == WatchType.Aspect)
+                {
+                    _sprite.spriteName = GetAspectSpriteName(percentage);
+                }
+                else if (Type == WatchType.Pillar)
+                {
+                    _sprite.fillAmount = percentage / 100f;
+                }
             }
             catch (Exception e)
             {
@@ -132,6 +202,14 @@ namespace WatchIt
                     infoMode = InfoManager.InfoMode.Health;
                     subInfoMode = InfoManager.SubInfoMode.DeathCare;
                     break;
+                case "FireDepartment":
+                    infoMode = InfoManager.InfoMode.FireSafety;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
+                case "PoliceDepartment":
+                    infoMode = InfoManager.InfoMode.CrimeRate;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
                 case "Jail":
                     infoMode = InfoManager.InfoMode.CrimeRate;
                     subInfoMode = InfoManager.SubInfoMode.Prisons;
@@ -140,11 +218,92 @@ namespace WatchIt
                     infoMode = InfoManager.InfoMode.Heating;
                     subInfoMode = InfoManager.SubInfoMode.Default;
                     break;
+                case "Landfill":
+                    infoMode = InfoManager.InfoMode.Garbage;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
+                case "Cemetery":
+                    infoMode = InfoManager.InfoMode.Health;
+                    subInfoMode = InfoManager.SubInfoMode.DeathCare;
+                    break;
+                case "Health":
+                    infoMode = InfoManager.InfoMode.Health;
+                    subInfoMode = InfoManager.SubInfoMode.HealthCare;
+                    break;
+                case "Fire":
+                    infoMode = InfoManager.InfoMode.FireSafety;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
+                case "Crime":
+                    infoMode = InfoManager.InfoMode.CrimeRate;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
+                case "Employment":
+                    infoMode = InfoManager.InfoMode.Density;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
                 default:
                     infoMode = InfoManager.InfoMode.None;
                     subInfoMode = InfoManager.SubInfoMode.None;
                     break;
             }
+        }
+
+        private int GetPercentage(string name)
+        {
+            int percentage = 0;
+
+            switch (name)
+            {
+                case "Electricity":
+                case "Water":
+                case "Sewage":
+                case "Garbage":
+                case "ElementarySchool":
+                case "HighSchool":
+                case "University":
+                case "Healthcare":
+                case "Crematorium":
+                case "Jail":
+                case "Heating":
+                    GetCapacityAndNeed(name, out int capacityAvailability, out int needAvailability);
+                    percentage = GetAvailabilityPercentage(capacityAvailability, needAvailability);
+                    break;
+                case "FireDepartment":
+                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.FireDepartment, out int fireDepartment);
+                    percentage = (int)Mathf.Clamp(fireDepartment, 0f, 100f);
+                    break;
+                case "PoliceDepartment":
+                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.PoliceDepartment, out int policeDepartment);
+                    percentage = (int)Mathf.Clamp(policeDepartment, 0f, 100f);
+                    break;
+                case "Landfill":
+                case "Cemetery":
+                    GetCapacityAndNeed(name, out int capacityUsage, out int needUsage);
+                    percentage = GetUsagePercentage(capacityUsage, needUsage);
+                    break;
+                case "Health":
+                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.Health, out int health);
+                    percentage = (int)Mathf.Clamp(health, 0f, 100f);
+                    break;
+                case "Fire":
+                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.FireHazard, out int fireHazard);
+                    percentage = (int)Mathf.Clamp(fireHazard, 0f, 100f);
+                    break;
+                case "Crime":
+                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.CrimeRate, out int crimeRate);
+                    percentage = (int)Mathf.Clamp(crimeRate, 0f, 100f);
+                    break;
+                case "Employment":
+                    int unemployment = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].GetUnemployment();
+                    percentage = (int)Mathf.Round(100f - unemployment);
+                    break;
+                default:
+                    percentage = 0;
+                    break;
+            }
+
+            return percentage;
         }
 
         private void GetCapacityAndNeed(string name, out int capacity, out int need)
@@ -204,6 +363,14 @@ namespace WatchIt
                         capacity = district.GetHeatingCapacity();
                         need = district.GetHeatingConsumption();
                         break;
+                    case "Landfill":
+                        capacity = district.GetGarbageCapacity();
+                        need = district.GetGarbageAmount();
+                        break;
+                    case "Cemetery":
+                        capacity = district.GetDeadCapacity();
+                        need = district.GetDeadAmount();
+                        break;
                     default:
                         capacity = 0;
                         need = 100;
@@ -212,12 +379,12 @@ namespace WatchIt
             }
         }
 
-        private int GetPercentage(int capacity, int need)
+        private int GetAvailabilityPercentage(int capacity, int need)
         {
-            return GetPercentage(capacity, need, 45, 55);
+            return GetAvailabilityPercentage(capacity, need, 45, 55);
         }
 
-        private int GetPercentage(int capacity, int need, int needMin, int needMax)
+        private int GetAvailabilityPercentage(int capacity, int need, int needMin, int needMax)
         {
             if (need != 0)
             {
@@ -231,7 +398,12 @@ namespace WatchIt
             return 100;
         }
 
-        private string GetSpriteName(int percentage)
+        private int GetUsagePercentage(int capacity, int need)
+        {
+            return (int)((float)need / (float)capacity * 100f);
+        }
+
+        private string GetAspectSpriteName(int percentage)
         {
             if (percentage > 55)
             {

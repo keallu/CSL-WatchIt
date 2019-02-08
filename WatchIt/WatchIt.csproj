@@ -107,6 +107,33 @@
     <EmbeddedResource Include="Icons\HorizontalHover.png" />
     <EmbeddedResource Include="Icons\VerticalHover.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Crime.png" />
+    <EmbeddedResource Include="Icons\Fire.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\RectHovered.png" />
+    <EmbeddedResource Include="Icons\RectNormal.png" />
+    <EmbeddedResource Include="Icons\RectPressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\CircleHovered.png" />
+    <EmbeddedResource Include="Icons\CircleNormal.png" />
+    <EmbeddedResource Include="Icons\CirclePressed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Cemetery.png" />
+    <EmbeddedResource Include="Icons\Health.png" />
+    <EmbeddedResource Include="Icons\Landfill.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Employment.png" />
+    <EmbeddedResource Include="Icons\Traffic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\FireDepartment.png" />
+    <EmbeddedResource Include="Icons\PoliceDepartment.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(SolutionName)"

@@ -90,6 +90,20 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
+            selected = ModConfig.Instance.FireDepartmentAvailability;
+            group.AddCheckbox("Fire Department Availability", selected, sel =>
+            {
+                ModConfig.Instance.FireDepartmentAvailability = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.PoliceDepartmentAvailability;
+            group.AddCheckbox("Police Department Availability", selected, sel =>
+            {
+                ModConfig.Instance.PoliceDepartmentAvailability = sel;
+                ModConfig.Instance.Save();
+            });
+
             selected = ModConfig.Instance.JailAvailability;
             group.AddCheckbox("Jail Availability", selected, sel =>
             {
@@ -101,6 +115,48 @@ namespace WatchIt
             group.AddCheckbox("Heating Availability", selected, sel =>
             {
                 ModConfig.Instance.HeatingAvailability = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.LandfillUsage;
+            group.AddCheckbox("Landfill Usage", selected, sel =>
+            {
+                ModConfig.Instance.LandfillUsage = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.CemeteryUsage;
+            group.AddCheckbox("Cemetery Usage", selected, sel =>
+            {
+                ModConfig.Instance.CemeteryUsage = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.HealthAverage;
+            group.AddCheckbox("Health Average", selected, sel =>
+            {
+                ModConfig.Instance.HealthAverage = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.FireHazard;
+            group.AddCheckbox("Fire Hazard", selected, sel =>
+            {
+                ModConfig.Instance.FireHazard = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.CrimeRate;
+            group.AddCheckbox("Crime Rate", selected, sel =>
+            {
+                ModConfig.Instance.CrimeRate = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.EmploymentRate;
+            group.AddCheckbox("Employment Rate", selected, sel =>
+            {
+                ModConfig.Instance.EmploymentRate = sel;
                 ModConfig.Instance.Save();
             });
 

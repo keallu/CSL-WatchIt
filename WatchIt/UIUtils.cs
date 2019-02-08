@@ -55,10 +55,10 @@ namespace WatchIt
             button.name = name + "Button";
 
             button.normalBgSprite = spriteName + "Normal";
+            button.focusedBgSprite = spriteName + "Focused";
             button.hoveredBgSprite = spriteName + "Hovered";
             button.pressedBgSprite = spriteName + "Pressed";
             button.disabledBgSprite = spriteName + "Disabled";
-
 
             return button;
         }
@@ -70,6 +70,7 @@ namespace WatchIt
             button.atlas = atlas;
 
             button.normalBgSprite = spriteName + "Normal";
+            button.focusedBgSprite = spriteName + "Focused";
             button.hoveredBgSprite = spriteName + "Hovered";
             button.pressedBgSprite = spriteName + "Pressed";
             button.disabledBgSprite = spriteName + "Disabled";

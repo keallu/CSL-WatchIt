@@ -8,7 +8,7 @@ namespace WatchIt
     public class LimitsPanel : UIPanel
     {
         private float _timer;
-
+        
         private UILabel _title;
         private UIButton _close;
         private UIDragHandle _dragHandle;
@@ -33,11 +33,6 @@ namespace WatchIt
             {
                 Debug.Log("[Watch It!] LimitsPanel:Awake -> Exception: " + e.Message);
             }
-        }
-
-        public override void OnDestroy()
-        {
-            base.OnDestroy();
         }
 
         public override void Start()
@@ -67,6 +62,11 @@ namespace WatchIt
             {
                 Debug.Log("[Watch It!] LimitsPanel:Update -> Exception: " + e.Message);
             }
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
         }
 
         private void CreateUI()

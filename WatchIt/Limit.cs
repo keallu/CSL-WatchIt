@@ -15,6 +15,7 @@ namespace WatchIt
         private UILabel _amount;
         private UILabel _capacity;
         private UILabel _consumption;
+        private UISprite _modded;
 
         public void CreateLimit(UIComponent parent, string name, int index)
         {
@@ -58,7 +59,7 @@ namespace WatchIt
                 _amount.autoSize = false;
                 _amount.height = 23f;
                 _amount.width = 150f;
-                _amount.relativePosition = new Vector3(165f, 2f);
+                _amount.relativePosition = new Vector3(165f, 2f);                
 
                 _capacity = UIUtils.CreateLabel(_panel, "LimitCapacity", "0");
                 _capacity.textScale = 0.875f;
@@ -79,6 +80,12 @@ namespace WatchIt
                 _consumption.height = 23f;
                 _consumption.width = 150f;
                 _consumption.relativePosition = new Vector3(485f, 2f);
+
+                _modded = UIUtils.CreateSprite(_consumption, "LimitModded", "IconWarning");
+                _modded.tooltip = "This capacity has been modded";
+                _modded.opacity = 1f;
+                _modded.size = new Vector2(23f, 23f);
+                _modded.relativePosition = new Vector3(-10f, 0f);
             }
             catch (Exception e)
             {
@@ -90,12 +97,12 @@ namespace WatchIt
         {
             try
             {
-                GetAmountAndCapacity(Name, out int amount, out int capacity);
+                GetAmountAndCapacity(Name, out int amount, out int capacity, out bool modded);
 
                 _amount.text = string.Format(CultureInfo.CurrentCulture, "{0:0,0}", amount);
                 _capacity.text = string.Format(CultureInfo.CurrentCulture, "{0:0,0}", capacity);
-
                 _consumption.text = GetConsumption(amount, capacity).ToString() + "%";
+                _modded.isVisible = modded;
             }
             catch (Exception e)
             {
@@ -115,10 +122,11 @@ namespace WatchIt
             }
         }
 
-        private void GetAmountAndCapacity(string name, out int amount, out int capacity)
+        private void GetAmountAndCapacity(string name, out int amount, out int capacity, out bool modded)
         {
             amount = 0;
             capacity = 0;
+            modded = false;
 
             GameAreaManager gameAreaManager = null;
             BuildingManager buildingManager = null;
@@ -142,110 +150,132 @@ namespace WatchIt
                     gameAreaManager = Singleton<GameAreaManager>.instance;
                     amount = gameAreaManager.m_areaCount;
                     capacity = gameAreaManager.m_maxAreaCount;
+                    modded = gameAreaManager.m_maxAreaCount > 9 ? true : false;
                     break;
                 case "Buildings":
                     buildingManager = Singleton<BuildingManager>.instance;
                     amount = buildingManager.m_buildingCount;
                     capacity = BuildingManager.MAX_BUILDING_COUNT;
+                    modded = false;
                     break;
                 case "Citizens":
                     citizenManager = Singleton<CitizenManager>.instance;
                     amount = citizenManager.m_citizenCount;
                     capacity = CitizenManager.MAX_CITIZEN_COUNT;
+                    modded = false;
                     break;
                 case "Citizen Units":
                     citizenManager = Singleton<CitizenManager>.instance;
                     amount = citizenManager.m_unitCount;
                     capacity = CitizenManager.MAX_UNIT_COUNT;
+                    modded = false;
                     break;
                 case "Citizen Instances":
                     citizenManager = Singleton<CitizenManager>.instance;
                     amount = citizenManager.m_instanceCount;
                     capacity = CitizenManager.MAX_INSTANCE_COUNT;
+                    modded = false;
                     break;
                 case "Disasters":
                     disasterManager = Singleton<DisasterManager>.instance;
                     amount = disasterManager.m_disasterCount;
                     capacity = DisasterManager.MAX_DISASTER_COUNT;
+                    modded = false;
                     break;
                 case "Districts":
                     districtManager = Singleton<DistrictManager>.instance;
                     amount = districtManager.m_districtCount;
                     capacity = DistrictManager.MAX_DISTRICT_COUNT;
+                    modded = false;
                     break;
                 case "Events":
                     eventManager = Singleton<EventManager>.instance;
                     amount = eventManager.m_eventCount;
                     capacity = EventManager.MAX_EVENT_COUNT;
+                    modded = false;
                     break;
                 case "Loans":
                     economyManager = Singleton<EconomyManager>.instance;
                     amount = economyManager.CountLoans();
                     capacity = EconomyManager.MAX_LOANS;
+                    modded = false;
                     break;
                 case "Net Segments":
                     netManager = Singleton<NetManager>.instance;
                     amount = netManager.m_segmentCount;
                     capacity = NetManager.MAX_SEGMENT_COUNT;
+                    modded = false;
                     break;
                 case "Net Nodes":
                     netManager = Singleton<NetManager>.instance;
                     amount = netManager.m_nodeCount;
                     capacity = NetManager.MAX_NODE_COUNT;
+                    modded = false;
                     break;
                 case "Net Lanes":
                     netManager = Singleton<NetManager>.instance;
                     amount = netManager.m_laneCount;
                     capacity = NetManager.MAX_LANE_COUNT;
+                    modded = false;
                     break;
                 case "Path Units":
                     pathManager = Singleton<PathManager>.instance;
                     amount = pathManager.m_pathUnitCount;
                     capacity = PathManager.MAX_PATHUNIT_COUNT;
+                    modded = false;
                     break;
                 case "Props":
                     propManager = Singleton<PropManager>.instance;
                     amount = propManager.m_propCount;
                     capacity = PropManager.MAX_PROP_COUNT;
+                    modded = false;
                     break;
                 case "Radio Channels":
                     audioManager = Singleton<AudioManager>.instance;
                     amount = audioManager.m_radioChannelCount;
                     capacity = AudioManager.MAX_RADIO_CHANNEL_COUNT;
+                    modded = false;
                     break;
                 case "Radio Contents":
                     audioManager = Singleton<AudioManager>.instance;
                     amount = audioManager.m_radioContentCount;
                     capacity = AudioManager.MAX_RADIO_CONTENT_COUNT;
+                    modded = false;
                     break;
                 case "Transport Lines":
                     transportManager = Singleton<TransportManager>.instance;
                     amount = transportManager.m_lineCount;
                     capacity = TransportManager.MAX_LINE_COUNT;
+                    modded = false;
                     break;
                 case "Trees":
                     treeManager = Singleton<TreeManager>.instance;
                     amount = treeManager.m_treeCount;
-                    capacity = TreeManager.MAX_TREE_COUNT;
+                    capacity = treeManager.m_trees.m_size > 262144 ? (int)treeManager.m_trees.m_size : TreeManager.MAX_TREE_COUNT;
+                    modded = treeManager.m_trees.m_size > 262144 ? true : false;
                     break;
                 case "Vehicles":
                     vehicleManager = Singleton<VehicleManager>.instance;
                     amount = vehicleManager.m_vehicleCount;
                     capacity = VehicleManager.MAX_VEHICLE_COUNT;
+                    modded = false;
                     break;
                 case "Vehicles Parked":
                     vehicleManager = Singleton<VehicleManager>.instance;
                     amount = vehicleManager.m_parkedCount;
                     capacity = VehicleManager.MAX_PARKED_COUNT;
+                    modded = false;
                     break;
                 case "Zoned Blocks":
                     zoneManager = Singleton<ZoneManager>.instance;
                     amount = zoneManager.m_blockCount;
                     capacity = ZoneManager.MAX_BLOCK_COUNT;
+                    modded = false;
                     break;
                 default:
                     amount = 0;
                     capacity = 0;
+                    modded = false;
                     break;
             }
         }
