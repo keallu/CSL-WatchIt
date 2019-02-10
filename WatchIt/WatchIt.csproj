@@ -127,12 +127,14 @@
     <EmbeddedResource Include="Icons\Landfill.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\Employment.png" />
     <EmbeddedResource Include="Icons\Traffic.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\FireDepartment.png" />
     <EmbeddedResource Include="Icons\PoliceDepartment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Unemployment.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

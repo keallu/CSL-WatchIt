@@ -14,6 +14,7 @@ namespace WatchIt
 
         private UIButton _button;
         private UISprite _sprite;
+        private UILabel _label;
 
         public void CreateWatch(UIComponent parent, string name, WatchType type, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
         {
@@ -35,6 +36,25 @@ namespace WatchIt
                 {
                     SetInfoMode(name);
                 };
+
+                if (ModConfig.Instance.ShowNumericalDigits is 2 || ModConfig.Instance.ShowNumericalDigits is 3)
+                {
+                    CreateNumericalDigits(_button, verticalLayout, index);
+
+                    if (ModConfig.Instance.ShowNumericalDigits is 2)
+                    {
+                        _label.isVisible = false;
+
+                        _button.eventMouseEnter += (component, eventParam) =>
+                        {
+                            _label.isVisible = true;
+                        };
+                        _button.eventMouseLeave += (component, eventParam) =>
+                        {
+                            _label.isVisible = false;
+                        };
+                    }
+                }
             }
             catch (Exception e)
             {
@@ -96,6 +116,39 @@ namespace WatchIt
             }
         }
 
+        private void CreateNumericalDigits(UIComponent parent, bool verticalLayout, int index)
+        {
+            try
+            {
+                _label = parent.AddUIComponent<UILabel>();
+                _label.name = Name;
+                _label.text = "0";
+
+                _label.textScale = 0.6f;
+                _label.useOutline = true;
+                _label.isInteractive = false;
+                _label.autoSize = false;
+                _label.height = 15f;
+                _label.width = parent.width;
+                _label.verticalAlignment = UIVerticalAlignment.Bottom;
+
+                if (verticalLayout)
+                {
+                    _label.textAlignment = UIHorizontalAlignment.Right;
+                    _label.relativePosition = new Vector3(0f - parent.width * 1.1f, parent.height / 2 - _label.height / 2);
+                }
+                else
+                {
+                    _label.textAlignment = UIHorizontalAlignment.Center;
+                    _label.relativePosition = new Vector3(parent.width / 2 - _label.width / 2, parent.height);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] Watch:CreateNumericalDigits -> Exception: " + e.Message);
+            }
+        }
+
         public void SetInfoMode(string name)
         {
             try
@@ -139,6 +192,11 @@ namespace WatchIt
                 {
                     _sprite.fillAmount = percentage / 100f;
                 }
+
+                if (ModConfig.Instance.ShowNumericalDigits is 2 || ModConfig.Instance.ShowNumericalDigits is 3)
+                {
+                    _label.text = percentage.ToString();
+                }
             }
             catch (Exception e)
             {
@@ -150,8 +208,20 @@ namespace WatchIt
         {
             try
             {
-                UnityEngine.Object.Destroy(_sprite);
-                UnityEngine.Object.Destroy(_button);
+                if (_sprite != null)
+                {
+                    UnityEngine.Object.Destroy(_sprite);
+                }
+
+                if (_button != null)
+                {
+                    UnityEngine.Object.Destroy(_button);
+                }
+
+                if (_label != null)
+                {
+                    UnityEngine.Object.Destroy(_label);
+                }
             }
             catch (Exception e)
             {
@@ -230,6 +300,10 @@ namespace WatchIt
                     infoMode = InfoManager.InfoMode.Health;
                     subInfoMode = InfoManager.SubInfoMode.HealthCare;
                     break;
+                case "Traffic":
+                    infoMode = InfoManager.InfoMode.Traffic;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
                 case "Fire":
                     infoMode = InfoManager.InfoMode.FireSafety;
                     subInfoMode = InfoManager.SubInfoMode.Default;
@@ -238,7 +312,7 @@ namespace WatchIt
                     infoMode = InfoManager.InfoMode.CrimeRate;
                     subInfoMode = InfoManager.SubInfoMode.Default;
                     break;
-                case "Employment":
+                case "Unemployment":
                     infoMode = InfoManager.InfoMode.Density;
                     subInfoMode = InfoManager.SubInfoMode.Default;
                     break;
@@ -283,8 +357,12 @@ namespace WatchIt
                     percentage = GetUsagePercentage(capacityUsage, needUsage);
                     break;
                 case "Health":
-                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.Health, out int health);
-                    percentage = (int)Mathf.Clamp(health, 0f, 100f);
+                    int health = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_residentialData.m_finalHealth;
+                    percentage = health;
+                    break;
+                case "Traffic":
+                    int traffic = (int)Singleton<VehicleManager>.instance.m_lastTrafficFlow;
+                    percentage = traffic;
                     break;
                 case "Fire":
                     Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.FireHazard, out int fireHazard);
@@ -294,9 +372,9 @@ namespace WatchIt
                     Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.CrimeRate, out int crimeRate);
                     percentage = (int)Mathf.Clamp(crimeRate, 0f, 100f);
                     break;
-                case "Employment":
+                case "Unemployment":
                     int unemployment = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].GetUnemployment();
-                    percentage = (int)Mathf.Round(100f - unemployment);
+                    percentage = unemployment;
                     break;
                 default:
                     percentage = 0;

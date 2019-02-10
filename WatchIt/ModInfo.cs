@@ -7,11 +7,26 @@ namespace WatchIt
     {
         public string Name => "Watch It!";
         public string Description => "Watch status of the important capacities in the game.";
-        
+
+        private static readonly string[] ShowNumericalDigitsLabels =
+        {
+            "Never",
+            "When Mouse Hover",
+            "Always"
+        };
+
+        private static readonly int[] ShowNumericalDigitsValues =
+        {
+            1,
+            2,
+            3
+        };
+
         public void OnSettingsUI(UIHelperBase helper)
         {
             UIHelperBase group;
             bool selected;
+            int selectedIndex;
             float selectedValue;
             float result;
 
@@ -22,6 +37,14 @@ namespace WatchIt
             {
                 float.TryParse(sel, out result);
                 ModConfig.Instance.RefreshInterval = result;
+                ModConfig.Instance.Save();
+            });
+
+            selectedIndex = GetSelectedOptionIndex(ShowNumericalDigitsValues, ModConfig.Instance.ShowNumericalDigits);
+
+            group.AddDropdown("Show Numerical Digits", ShowNumericalDigitsLabels, selectedIndex, sel =>
+            {
+                ModConfig.Instance.ShowNumericalDigits = ShowNumericalDigitsValues[sel];
                 ModConfig.Instance.Save();
             });
 
@@ -139,6 +162,13 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
+            selected = ModConfig.Instance.TrafficFlow;
+            group.AddCheckbox("Traffic Flow", selected, sel =>
+            {
+                ModConfig.Instance.TrafficFlow = sel;
+                ModConfig.Instance.Save();
+            });
+
             selected = ModConfig.Instance.FireHazard;
             group.AddCheckbox("Fire Hazard", selected, sel =>
             {
@@ -153,10 +183,10 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
-            selected = ModConfig.Instance.EmploymentRate;
-            group.AddCheckbox("Employment Rate", selected, sel =>
+            selected = ModConfig.Instance.UnemploymentRate;
+            group.AddCheckbox("Unemployment Rate", selected, sel =>
             {
-                ModConfig.Instance.EmploymentRate = sel;
+                ModConfig.Instance.UnemploymentRate = sel;
                 ModConfig.Instance.Save();
             });
 

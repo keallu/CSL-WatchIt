@@ -172,7 +172,7 @@ namespace WatchIt
                         "Traffic",
                         "Fire",
                         "Crime",
-                        "Employment",
+                        "Unemployment",
                         "Statistics",
                         "Limits"
                     };
@@ -372,6 +372,10 @@ namespace WatchIt
                 {
                     _watches.Add(CreateWatch("Health", Watch.WatchType.Pillar, "Health", "Health Average"));
                 }
+                if (ModConfig.Instance.TrafficFlow)
+                {
+                    _watches.Add(CreateWatch("Traffic", Watch.WatchType.Pillar, "Traffic", "Traffic Flow"));
+                }
                 if (ModConfig.Instance.FireHazard)
                 {
                     _watches.Add(CreateWatch("Fire", Watch.WatchType.Pillar, "Fire", "Fire Hazard"));
@@ -380,9 +384,9 @@ namespace WatchIt
                 {
                     _watches.Add(CreateWatch("Crime", Watch.WatchType.Pillar, "Crime", "Crime Rate"));
                 }
-                if (ModConfig.Instance.EmploymentRate)
+                if (ModConfig.Instance.UnemploymentRate)
                 {
-                    _watches.Add(CreateWatch("Employment", Watch.WatchType.Pillar, "Employment", "Employment Rate"));
+                    _watches.Add(CreateWatch("Unemployment", Watch.WatchType.Pillar, "Unemployment", "Unemployment Rate"));
                 }
 
                 int buttonIndex = _watches.Count;
@@ -424,7 +428,7 @@ namespace WatchIt
                 {
                     buttonIndex++;
 
-                    _statisticsButton = UIUtils.CreateButton(_panel, "Statistics", _textureAtlas, "Rect");
+                    _statisticsButton = UIUtils.CreateButton(_panel, "Statistics", _textureAtlas, "Circle");
                     _statisticsButton.tooltip = "City Statistics";
                     _statisticsButton.size = new Vector2(33f, 33f);
                     _statisticsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(0f, 36f * buttonIndex + 22f) : new Vector3(36f * buttonIndex + 22f, 0f);
