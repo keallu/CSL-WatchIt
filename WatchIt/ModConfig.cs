@@ -4,11 +4,18 @@
     public class ModConfig
     {
         public bool ConfigUpdated { get; set; }
+        public bool ShowOnOffButton { get; set; } = true;
+        public float OnOffButtonPositionX { get; set; }
+        public float OnOffButtonPositionY { get; set; }
+        public bool Visible { get; set; } = true;
         public float PositionX { get; set; }
         public float PositionY { get; set; }
         public bool VerticalLayout { get; set; } = true;
         public float RefreshInterval { get; set; } = 5.0f;
         public int ShowNumericalDigits { get; set; } = 1;
+        public int NumericalDigitsAnchor { get; set; } = 1;
+        public float Opacity { get; set; } = 1.0f;
+        public float OpacityWhenHover { get; set; } = 1.0f;
         public bool ElectricityAvailability { get; set; } = true;
         public bool WaterAvailability { get; set; } = true;
         public bool SewageAvailability { get; set; } = true;

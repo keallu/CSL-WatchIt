@@ -12,6 +12,8 @@ namespace WatchIt
 
         private UIButton _esc;
         private UITextureAtlas _textureAtlas;
+        private UIDragHandle _onOffDragHandle;
+        private UIButton _onOffButton;
         private UIPanel _panel;
         private UIDragHandle _dragHandle;
         private UISprite _dragSprite;
@@ -28,6 +30,16 @@ namespace WatchIt
                 if (_esc == null)
                 {
                     _esc = GameObject.Find("Esc").GetComponent<UIButton>();
+                }
+
+                if (ModConfig.Instance.OnOffButtonPositionX == 0.0f)
+                {
+                    ModConfig.Instance.OnOffButtonPositionX = _esc.absolutePosition.x - 300f;
+                }
+
+                if (ModConfig.Instance.OnOffButtonPositionY == 0.0f)
+                {
+                    ModConfig.Instance.OnOffButtonPositionY = _esc.absolutePosition.y;
                 }
 
                 if (ModConfig.Instance.PositionX == 0.0f)
@@ -87,13 +99,16 @@ namespace WatchIt
                 }
                 else
                 {
-                    _timer += Time.deltaTime;
-
-                    if (_timer > ModConfig.Instance.RefreshInterval)
+                    if (ModConfig.Instance.Visible)
                     {
-                        _timer = _timer - ModConfig.Instance.RefreshInterval;
+                        _timer += Time.deltaTime;
 
-                        UpdateWatches();
+                        if (_timer > ModConfig.Instance.RefreshInterval)
+                        {
+                            _timer = _timer - ModConfig.Instance.RefreshInterval;
+
+                            UpdateWatches();
+                        }
                     }
                 }
             }
@@ -193,11 +208,49 @@ namespace WatchIt
         {
             try
             {
+                _onOffButton = UIUtils.CreateLargeButton("WatchIt");
+                _onOffButton.size = new Vector2(46f, 46f);
+                _onOffButton.absolutePosition = new Vector3(ModConfig.Instance.OnOffButtonPositionX, ModConfig.Instance.OnOffButtonPositionY);
+                _onOffButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
+                _onOffButton.normalFgSprite = "LineDetailButton";
+                _onOffButton.focusedFgSprite = "LineDetailButton";
+                _onOffButton.hoveredFgSprite = "LineDetailButton";
+                _onOffButton.pressedFgSprite = "LineDetailButton";
+                _onOffButton.disabledFgSprite = "LineDetailButton";
+                _onOffButton.eventClick += (component, eventParam) =>
+                {
+                    ModConfig.Instance.Visible = !ModConfig.Instance.Visible;
+                    ModConfig.Instance.Save();
+
+                    _onOffButton.Unfocus();
+                    _onOffButton.normalBgSprite = ModConfig.Instance.Visible ? "RoundBackBigFocused" : "RoundBackBig";
+
+                    _panel.isVisible = ModConfig.Instance.Visible;
+                };
+
+                _onOffDragHandle = UIUtils.CreateDragHandle(_onOffButton);
+                _onOffDragHandle.tooltip = "Drag to move button";
+                _onOffDragHandle.size = new Vector2(46f, 46f);
+                _onOffDragHandle.relativePosition = new Vector3(0f, 0f);
+                _onOffDragHandle.eventMouseUp += (component, eventParam) =>
+                {
+                    ModConfig.Instance.OnOffButtonPositionX = _onOffButton.absolutePosition.x;
+                    ModConfig.Instance.OnOffButtonPositionY = _onOffButton.absolutePosition.y;
+                    ModConfig.Instance.Save();
+                };
+
                 _panel = UIUtils.CreatePanel("WatchIt");
                 _panel.autoSize = false;
                 _panel.autoLayout = false;
-
                 _panel.absolutePosition = new Vector3(ModConfig.Instance.PositionX, ModConfig.Instance.PositionY);
+                _panel.eventMouseEnter += (component, eventParam) =>
+                {
+                    _panel.opacity = ModConfig.Instance.OpacityWhenHover;
+                };
+                _panel.eventMouseLeave += (component, eventParam) =>
+                {
+                    _panel.opacity = ModConfig.Instance.Opacity;
+                };
 
                 _dragHandle = UIUtils.CreateDragHandle(_panel);
                 _dragHandle.tooltip = "Drag to move panel";
@@ -244,9 +297,16 @@ namespace WatchIt
         {
             try
             {
+                _onOffButton.isVisible = ModConfig.Instance.ShowOnOffButton ? true : false;
+                _onOffButton.normalBgSprite = ModConfig.Instance.Visible ? "RoundBackBigFocused" : "RoundBackBig";
+                _onOffButton.zOrder = 0;
+                _panel.isVisible = ModConfig.Instance.Visible;
+                _panel.opacity = ModConfig.Instance.Opacity;
+                _panel.zOrder = 0;
+
                 if (ModConfig.Instance.VerticalLayout)
                 {
-                    _panel.width = 36f;                   
+                    _panel.width = 36f;
 
                     _orientationSprite.tooltip = "Click to layout panel horizontally";
                     _orientationSprite.spriteName = "Horizontal";

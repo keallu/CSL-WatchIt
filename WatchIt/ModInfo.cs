@@ -11,7 +11,7 @@ namespace WatchIt
         private static readonly string[] ShowNumericalDigitsLabels =
         {
             "Never",
-            "When Mouse Hover",
+            "When Hover",
             "Always"
         };
 
@@ -20,6 +20,22 @@ namespace WatchIt
             1,
             2,
             3
+        };
+
+        private static readonly string[] NumericalDigitsAnchorLabels =
+        {
+            "Left",
+            "Right",
+            "Top",
+            "Buttom"
+        };
+
+        private static readonly int[] NumericalDigitsAnchorValues =
+        {
+            1,
+            2,
+            3,
+            4
         };
 
         public void OnSettingsUI(UIHelperBase helper)
@@ -32,6 +48,13 @@ namespace WatchIt
 
             group = helper.AddGroup(Name);
 
+            selected = ModConfig.Instance.ShowOnOffButton;
+            group.AddCheckbox("Show On/Off Button", selected, sel =>
+            {
+                ModConfig.Instance.ShowOnOffButton = sel;
+                ModConfig.Instance.Save();
+            });
+
             selectedValue = ModConfig.Instance.RefreshInterval;
             group.AddTextfield("Refresh Interval (in seconds)", selectedValue.ToString(), sel =>
             {
@@ -41,10 +64,30 @@ namespace WatchIt
             });
 
             selectedIndex = GetSelectedOptionIndex(ShowNumericalDigitsValues, ModConfig.Instance.ShowNumericalDigits);
-
             group.AddDropdown("Show Numerical Digits", ShowNumericalDigitsLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.ShowNumericalDigits = ShowNumericalDigitsValues[sel];
+                ModConfig.Instance.Save();
+            });
+
+            selectedIndex = GetSelectedOptionIndex(NumericalDigitsAnchorValues, ModConfig.Instance.NumericalDigitsAnchor);
+            group.AddDropdown("Numerical Digits Anchor", NumericalDigitsAnchorLabels, selectedIndex, sel =>
+            {
+                ModConfig.Instance.NumericalDigitsAnchor = NumericalDigitsAnchorValues[sel];
+                ModConfig.Instance.Save();
+            });
+
+            selectedValue = ModConfig.Instance.Opacity;
+            group.AddSlider("Opacity", 0.0f, 1f, 0.05f, selectedValue, sel =>
+            {
+                ModConfig.Instance.Opacity = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selectedValue = ModConfig.Instance.OpacityWhenHover;
+            group.AddSlider("Opacity When Hover", 0.0f, 1f, 0.05f, selectedValue, sel =>
+            {
+                ModConfig.Instance.OpacityWhenHover = sel;
                 ModConfig.Instance.Save();
             });
 

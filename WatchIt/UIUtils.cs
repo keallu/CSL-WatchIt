@@ -49,16 +49,30 @@ namespace WatchIt
             return sprite;
         }
 
-        public static UIButton CreateButton(UIComponent parent, string name, string spriteName)
+        public static UIButton CreateLargeButton(string name)
+        {
+            UIButton button = UIView.GetAView().AddUIComponent(typeof(UIButton)) as UIButton;
+            button.name = name + "LargeButton";
+
+            button.normalBgSprite = "RoundBackBig";
+            button.focusedBgSprite = "RoundBackBigFocused";
+            button.hoveredBgSprite = "RoundBackBigHovered";
+            button.pressedBgSprite = "RoundBackBigPressed";
+            button.disabledBgSprite = "RoundBackBigDisabled";
+
+            return button;
+        }
+
+        public static UIButton CreateLargeButton(UIComponent parent, string name)
         {
             UIButton button = parent.AddUIComponent<UIButton>();
-            button.name = name + "Button";
+            button.name = name + "LargeButton";
 
-            button.normalBgSprite = spriteName + "Normal";
-            button.focusedBgSprite = spriteName + "Focused";
-            button.hoveredBgSprite = spriteName + "Hovered";
-            button.pressedBgSprite = spriteName + "Pressed";
-            button.disabledBgSprite = spriteName + "Disabled";
+            button.normalBgSprite = "RoundBackBig";
+            button.focusedBgSprite = "RoundBackBigFocused";
+            button.hoveredBgSprite = "RoundBackBigHovered";
+            button.pressedBgSprite = "RoundBackBigPressed";
+            button.disabledBgSprite = "RoundBackBigDisabled";
 
             return button;
         }

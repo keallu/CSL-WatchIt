@@ -37,11 +37,11 @@ namespace WatchIt
                     SetInfoMode(name);
                 };
 
-                if (ModConfig.Instance.ShowNumericalDigits is 2 || ModConfig.Instance.ShowNumericalDigits is 3)
+                if (ModConfig.Instance.ShowNumericalDigits == 2 || ModConfig.Instance.ShowNumericalDigits == 3)
                 {
-                    CreateNumericalDigits(_button, verticalLayout, index);
+                    CreateNumericalDigits(_button, ModConfig.Instance.NumericalDigitsAnchor, index);
 
-                    if (ModConfig.Instance.ShowNumericalDigits is 2)
+                    if (ModConfig.Instance.ShowNumericalDigits == 2)
                     {
                         _label.isVisible = false;
 
@@ -116,7 +116,7 @@ namespace WatchIt
             }
         }
 
-        private void CreateNumericalDigits(UIComponent parent, bool verticalLayout, int index)
+        private void CreateNumericalDigits(UIComponent parent, int anchor, int index)
         {
             try
             {
@@ -132,10 +132,20 @@ namespace WatchIt
                 _label.width = parent.width;
                 _label.verticalAlignment = UIVerticalAlignment.Bottom;
 
-                if (verticalLayout)
+                if (anchor == 1)
                 {
                     _label.textAlignment = UIHorizontalAlignment.Right;
                     _label.relativePosition = new Vector3(0f - parent.width * 1.1f, parent.height / 2 - _label.height / 2);
+                }
+                else if(anchor == 2)
+                {
+                    _label.textAlignment = UIHorizontalAlignment.Left;
+                    _label.relativePosition = new Vector3(parent.width * 1.1f, parent.height / 2 - _label.height / 2);
+                }
+                else if (anchor == 3)
+                {
+                    _label.textAlignment = UIHorizontalAlignment.Center;
+                    _label.relativePosition = new Vector3(parent.width / 2 - _label.width / 2, 0f - _label.height);
                 }
                 else
                 {
@@ -193,7 +203,7 @@ namespace WatchIt
                     _sprite.fillAmount = percentage / 100f;
                 }
 
-                if (ModConfig.Instance.ShowNumericalDigits is 2 || ModConfig.Instance.ShowNumericalDigits is 3)
+                if (ModConfig.Instance.ShowNumericalDigits == 2 || ModConfig.Instance.ShowNumericalDigits == 3)
                 {
                     _label.text = percentage.ToString();
                 }
