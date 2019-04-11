@@ -52,7 +52,7 @@ namespace WatchIt
 
                     if (_timer > ModConfig.Instance.RefreshInterval)
                     {
-                        _timer = _timer - ModConfig.Instance.RefreshInterval;
+                        _timer -= ModConfig.Instance.RefreshInterval;
 
                         UpdateUI();
                     }

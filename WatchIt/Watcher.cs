@@ -30,26 +30,30 @@ namespace WatchIt
                 if (_esc == null)
                 {
                     _esc = GameObject.Find("Esc").GetComponent<UIButton>();
+                    WatchManager.Instance.OnOffButtonDefaultPositionX = _esc.absolutePosition.x - 300f;
+                    WatchManager.Instance.OnOffButtonDefaultPositionY = _esc.absolutePosition.y;
+                    WatchManager.Instance.DefaultPositionX = _esc.absolutePosition.x + 13f;
+                    WatchManager.Instance.DefaultPositionY = _esc.absolutePosition.y + 50f;
                 }
 
                 if (ModConfig.Instance.OnOffButtonPositionX == 0.0f)
                 {
-                    ModConfig.Instance.OnOffButtonPositionX = _esc.absolutePosition.x - 300f;
+                    ModConfig.Instance.OnOffButtonPositionX = WatchManager.Instance.OnOffButtonDefaultPositionX;
                 }
 
                 if (ModConfig.Instance.OnOffButtonPositionY == 0.0f)
                 {
-                    ModConfig.Instance.OnOffButtonPositionY = _esc.absolutePosition.y;
+                    ModConfig.Instance.OnOffButtonPositionY = WatchManager.Instance.OnOffButtonDefaultPositionY;
                 }
 
                 if (ModConfig.Instance.PositionX == 0.0f)
                 {
-                    ModConfig.Instance.PositionX = _esc.absolutePosition.x + 13f;
+                    ModConfig.Instance.PositionX = WatchManager.Instance.DefaultPositionX;
                 }
 
                 if (ModConfig.Instance.PositionY == 0.0f)
                 {
-                    ModConfig.Instance.PositionY = _esc.absolutePosition.y + 50f;
+                    ModConfig.Instance.PositionY = WatchManager.Instance.DefaultPositionY;
                 }
 
                 _textureAtlas = LoadResources();
@@ -105,7 +109,7 @@ namespace WatchIt
 
                         if (_timer > ModConfig.Instance.RefreshInterval)
                         {
-                            _timer = _timer - ModConfig.Instance.RefreshInterval;
+                            _timer -= ModConfig.Instance.RefreshInterval;
 
                             UpdateWatches();
                         }
@@ -300,9 +304,12 @@ namespace WatchIt
                 _onOffButton.isVisible = ModConfig.Instance.ShowOnOffButton ? true : false;
                 _onOffButton.normalBgSprite = ModConfig.Instance.Visible ? "RoundBackBigFocused" : "RoundBackBig";
                 _onOffButton.zOrder = 0;
+                _onOffButton.absolutePosition = new Vector3(ModConfig.Instance.OnOffButtonPositionX, ModConfig.Instance.OnOffButtonPositionY);
+
                 _panel.isVisible = ModConfig.Instance.Visible;
                 _panel.opacity = ModConfig.Instance.Opacity;
                 _panel.zOrder = 0;
+                _panel.absolutePosition = new Vector3(ModConfig.Instance.PositionX, ModConfig.Instance.PositionY);
 
                 if (ModConfig.Instance.VerticalLayout)
                 {

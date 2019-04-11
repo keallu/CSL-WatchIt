@@ -91,6 +91,14 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
+            group.AddSpace(10);
+
+            group.AddButton("Reset Positioning of Button and Panel", () =>
+            {
+                WatchManager.Instance.ResetOnOffButtonPosition();
+                WatchManager.Instance.ResetPosition();
+            });
+
             group = helper.AddGroup("Watchers");
 
             selected = ModConfig.Instance.ElectricityAvailability;
