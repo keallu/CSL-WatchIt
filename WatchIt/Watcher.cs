@@ -17,7 +17,6 @@ namespace WatchIt
         private UIPanel _panel;
         private UIDragHandle _dragHandle;
         private UISprite _dragSprite;
-        private UISprite _orientationSprite;
         private UIButton _limitsButton;
         private UIButton _statisticsButton;
 
@@ -164,11 +163,7 @@ namespace WatchIt
                         "RectHovered",
                         "RectPressed",
                         "Drag",
-                        "Horizontal",
-                        "Vertical",
                         "DragHover",
-                        "HorizontalHover",
-                        "VerticalHover",
                         "WatchGreen",
                         "WatchYellow",
                         "WatchRed",
@@ -186,12 +181,17 @@ namespace WatchIt
                         "Jail",
                         "Heating",
                         "Landfill",
-                        "Health",
                         "Cemetery",
                         "Traffic",
+                        "GroundPollution",
+                        "DrinkingWaterPollution",
+                        "NoisePollution",
                         "Fire",
                         "Crime",
                         "Unemployment",
+                        "Health",
+                        "CityAttractiveness",
+                        "Happiness",
                         "Statistics",
                         "Limits"
                     };
@@ -258,7 +258,7 @@ namespace WatchIt
 
                 _dragHandle = UIUtils.CreateDragHandle(_panel);
                 _dragHandle.tooltip = "Drag to move panel";
-                _dragHandle.size = new Vector2(15f, 15f);
+                _dragHandle.size = new Vector2(30f, 30f);
                 _dragHandle.relativePosition = new Vector3(3f, 3f);
                 _dragHandle.eventMouseEnter += (component, eventParam) =>
                 {
@@ -277,17 +277,8 @@ namespace WatchIt
 
                 _dragSprite = UIUtils.CreateSprite(_panel, "Drag", _textureAtlas, "Drag");
                 _dragSprite.isInteractive = false;
-                _dragSprite.size = new Vector2(15f, 15f);
+                _dragSprite.size = new Vector2(30f, 30f);
                 _dragSprite.relativePosition = new Vector3(3f, 3f);
-
-                _orientationSprite = UIUtils.CreateSprite(_panel, "Orientation", _textureAtlas, "Vertical");
-                _orientationSprite.size = new Vector2(15f, 15f);
-                _orientationSprite.eventClick += (component, eventParam) =>
-                {
-                    ModConfig.Instance.VerticalLayout = !ModConfig.Instance.VerticalLayout;
-                    ModConfig.Instance.Save();
-                    UpdateUI();
-                };
 
                 UpdateUI();
             }
@@ -313,35 +304,33 @@ namespace WatchIt
 
                 if (ModConfig.Instance.VerticalLayout)
                 {
-                    _panel.width = 36f;
-
-                    _orientationSprite.tooltip = "Click to layout panel horizontally";
-                    _orientationSprite.spriteName = "Horizontal";
-                    _orientationSprite.relativePosition = new Vector3(18f, 3f);
-                    _orientationSprite.eventMouseEnter += (component, eventParam) =>
-                    {
-                        _orientationSprite.spriteName = "HorizontalHover";
-                    };
-                    _orientationSprite.eventMouseLeave += (component, eventParam) =>
-                    {
-                        _orientationSprite.spriteName = "Horizontal";
-                    };
+                    _panel.width = ModConfig.Instance.DoubleRibbonLayout ? 72f : 36f;
                 }
                 else
                 {
-                    _panel.height = 36f;
+                    _panel.height = ModConfig.Instance.DoubleRibbonLayout ? 72f : 36f;
+                }
 
-                    _orientationSprite.tooltip = "Click to layout panel vertically";
-                    _orientationSprite.spriteName = "Vertical";
-                    _orientationSprite.relativePosition = new Vector3(3f, 18f);
-                    _orientationSprite.eventMouseEnter += (component, eventParam) =>
-                    {
-                        _orientationSprite.spriteName = "VerticalHover";
-                    };
-                    _orientationSprite.eventMouseLeave += (component, eventParam) =>
-                    {
-                        _orientationSprite.spriteName = "Vertical";
-                    };
+                if (ModConfig.Instance.ShowDragIcon)
+                {
+                    _dragHandle.isEnabled = true;
+                    _dragSprite.isVisible = true;
+                }
+                else
+                {
+                    _dragHandle.isEnabled = false;
+                    _dragSprite.isVisible = false;
+                }
+
+                if (ModConfig.Instance.DoubleRibbonLayout)
+                {
+                    _dragHandle.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(21f, 3f) : new Vector3(3f, 21f);
+                    _dragSprite.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(21f, 3f) : new Vector3(3f, 21f);
+                }
+                else
+                {
+                    _dragHandle.relativePosition = new Vector3(3f, 3f);
+                    _dragSprite.relativePosition = new Vector3(3f, 3f);
                 }
 
                 CreateOrUpdatePanelButtons();
@@ -435,13 +424,21 @@ namespace WatchIt
                 {
                     _watches.Add(CreateWatch("Cemetery", Watch.WatchType.Pillar, "Cemetery", "Cemetery Usage"));
                 }
-                if (ModConfig.Instance.HealthAverage)
-                {
-                    _watches.Add(CreateWatch("Health", Watch.WatchType.Pillar, "Health", "Health Average"));
-                }
                 if (ModConfig.Instance.TrafficFlow)
                 {
                     _watches.Add(CreateWatch("Traffic", Watch.WatchType.Pillar, "Traffic", "Traffic Flow"));
+                }
+                if (ModConfig.Instance.GroundPollution)
+                {
+                    _watches.Add(CreateWatch("GroundPollution", Watch.WatchType.Pillar, "GroundPollution", "Ground Pollution"));
+                }
+                if (ModConfig.Instance.DrinkingWaterPollution)
+                {
+                    _watches.Add(CreateWatch("DrinkingWaterPollution", Watch.WatchType.Pillar, "DrinkingWaterPollution", "Drinking Water Pollution"));
+                }
+                if (ModConfig.Instance.NoisePollution)
+                {
+                    _watches.Add(CreateWatch("NoisePollution", Watch.WatchType.Pillar, "NoisePollution", "Noise Pollution"));
                 }
                 if (ModConfig.Instance.FireHazard)
                 {
@@ -455,6 +452,18 @@ namespace WatchIt
                 {
                     _watches.Add(CreateWatch("Unemployment", Watch.WatchType.Pillar, "Unemployment", "Unemployment Rate"));
                 }
+                if (ModConfig.Instance.HealthAverage)
+                {
+                    _watches.Add(CreateWatch("Health", Watch.WatchType.Pillar, "Health", "Health Average"));
+                }
+                if (ModConfig.Instance.CityAttractiveness)
+                {
+                    _watches.Add(CreateWatch("CityAttractiveness", Watch.WatchType.Pillar, "CityAttractiveness", "City Attractiveness"));
+                }
+                if (ModConfig.Instance.Happiness)
+                {
+                    _watches.Add(CreateWatch("Happiness", Watch.WatchType.Pillar, "Happiness", "Happiness"));
+                }
 
                 int buttonIndex = _watches.Count;
 
@@ -465,7 +474,15 @@ namespace WatchIt
                     _limitsButton = UIUtils.CreateButton(_panel, "Limits", _textureAtlas, "Circle");
                     _limitsButton.tooltip = "Game Limits";
                     _limitsButton.size = new Vector2(33f, 33f);
-                    _limitsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(0f, 36f * buttonIndex + 22f) : new Vector3(36f * buttonIndex + 22f, 0f);
+
+                    if (ModConfig.Instance.DoubleRibbonLayout)
+                    {
+                        _limitsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(36f * (buttonIndex % 2) + 1.5f, 36f * (buttonIndex / 2) + 36f) : new Vector3(36f * (buttonIndex / 2) + 36f, 36f * (buttonIndex % 2) + 1.5f);
+                    }
+                    else
+                    {
+                        _limitsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(1.5f, 36f * buttonIndex + 36f) : new Vector3(36f * buttonIndex + 36f, 1.5f);
+                    }                    
 
                     _limitsButton.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
                     _limitsButton.normalFgSprite = "Limits";
@@ -498,7 +515,15 @@ namespace WatchIt
                     _statisticsButton = UIUtils.CreateButton(_panel, "Statistics", _textureAtlas, "Circle");
                     _statisticsButton.tooltip = "City Statistics";
                     _statisticsButton.size = new Vector2(33f, 33f);
-                    _statisticsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(0f, 36f * buttonIndex + 22f) : new Vector3(36f * buttonIndex + 22f, 0f);
+
+                    if (ModConfig.Instance.DoubleRibbonLayout)
+                    {
+                        _statisticsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(36f * (buttonIndex % 2) + 1.5f, 36f * (buttonIndex / 2) + 36f) : new Vector3(36f * (buttonIndex / 2) + 36f, 36f * (buttonIndex % 2) + 1.5f);
+                    }
+                    else
+                    {
+                        _statisticsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(1.5f, 36f * buttonIndex + 36f) : new Vector3(36f * buttonIndex + 36f, 1.5f);
+                    }                    
 
                     _statisticsButton.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
                     _statisticsButton.normalFgSprite = "Statistics";
@@ -514,11 +539,11 @@ namespace WatchIt
 
                 if (ModConfig.Instance.VerticalLayout)
                 {
-                    _panel.height = 36f * ++buttonIndex + 22f;
+                    _panel.height = ModConfig.Instance.DoubleRibbonLayout ? (36f * ++buttonIndex / 2) + 36f : 36f * ++buttonIndex + 36f;
                 }
                 else
                 {
-                    _panel.width = 36f * ++buttonIndex + 22f;
+                    _panel.width = ModConfig.Instance.DoubleRibbonLayout ? (36f * ++buttonIndex / 2) + 36f : 36f * ++buttonIndex + 36f;
                 }
             }
             catch (Exception e)
@@ -533,7 +558,7 @@ namespace WatchIt
 
             try
             {
-                watch.CreateWatch(_panel, name, type, ModConfig.Instance.VerticalLayout, _watches.Count, _textureAtlas, spriteName, toolTip);
+                watch.CreateWatch(_panel, name, type, _watches.Count, _textureAtlas, spriteName, toolTip);
             }
             catch (Exception e)
             {

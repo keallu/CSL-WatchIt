@@ -100,13 +100,7 @@
     <EmbeddedResource Include="Icons\Drag.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\Horizontal.png" />
-    <EmbeddedResource Include="Icons\Vertical.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Icons\DragHover.png" />
-    <EmbeddedResource Include="Icons\HorizontalHover.png" />
-    <EmbeddedResource Include="Icons\VerticalHover.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Crime.png" />
@@ -136,6 +130,21 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Unemployment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\GroundPollution.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Happiness.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\NoisePollution.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\DrinkingWaterPollution.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\CityAttractiveness.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

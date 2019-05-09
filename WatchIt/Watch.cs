@@ -16,7 +16,7 @@ namespace WatchIt
         private UISprite _sprite;
         private UILabel _label;
 
-        public void CreateWatch(UIComponent parent, string name, WatchType type, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
+        public void CreateWatch(UIComponent parent, string name, WatchType type, int index, UITextureAtlas atlas, string spriteName, string toolTip)
         {
             try
             {
@@ -25,11 +25,11 @@ namespace WatchIt
 
                 if (Type == WatchType.Aspect)
                 {
-                    CreateAsAspect(parent, verticalLayout, index, atlas, spriteName, toolTip);
+                    CreateAsAspect(parent, ModConfig.Instance.VerticalLayout, ModConfig.Instance.DoubleRibbonLayout, index, atlas, spriteName, toolTip);
                 }
                 else if (Type == WatchType.Pillar)
                 {
-                    CreateAsPillar(parent, verticalLayout, index, atlas, spriteName, toolTip);
+                    CreateAsPillar(parent, ModConfig.Instance.VerticalLayout, ModConfig.Instance.DoubleRibbonLayout, index, atlas, spriteName, toolTip);
                 }
 
                 _button.eventClick += (component, eventParam) =>
@@ -39,7 +39,7 @@ namespace WatchIt
 
                 if (ModConfig.Instance.ShowNumericalDigits == 2 || ModConfig.Instance.ShowNumericalDigits == 3)
                 {
-                    CreateNumericalDigits(_button, ModConfig.Instance.NumericalDigitsAnchor, index);
+                    CreateNumericalDigits(_button, ModConfig.Instance.NumericalDigitsAnchor, ModConfig.Instance.VerticalLayout, ModConfig.Instance.DoubleRibbonLayout, index);
 
                     if (ModConfig.Instance.ShowNumericalDigits == 2)
                     {
@@ -62,14 +62,22 @@ namespace WatchIt
             }
         }
 
-        private void CreateAsAspect(UIComponent parent, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
+        private void CreateAsAspect(UIComponent parent, bool verticalLayout, bool doubleRibbonLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
         {
             try
             {
                 _button = UIUtils.CreateButton(parent, Name, atlas, "Circle");
                 _button.tooltip = toolTip;
                 _button.size = new Vector2(33f, 33f);
-                _button.relativePosition = verticalLayout ? new Vector3(0f, (36f * index) + 22f) : new Vector3((36f * index) + 22f, 0f);
+
+                if (doubleRibbonLayout)
+                {
+                    _button.relativePosition = verticalLayout ? new Vector3(36f * (index % 2) + 1.5f, 36f * (index / 2) + 36f) : new Vector3(36f * (index / 2) + 36f, 36f * (index % 2) + 1.5f);
+                }
+                else
+                {
+                    _button.relativePosition = verticalLayout ? new Vector3(1.5f, 36f * index + 36f) : new Vector3(36f * index + 36f, 1.5f);
+                }
 
                 _button.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
                 _button.normalFgSprite = spriteName;
@@ -87,14 +95,22 @@ namespace WatchIt
             }
         }
 
-        private void CreateAsPillar(UIComponent parent, bool verticalLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
+        private void CreateAsPillar(UIComponent parent, bool verticalLayout, bool doubleRibbonLayout, int index, UITextureAtlas atlas, string spriteName, string toolTip)
         {
             try
             {
                 _button = UIUtils.CreateButton(parent, Name, atlas, "Rect");
                 _button.tooltip = toolTip;
                 _button.size = new Vector2(33f, 33f);
-                _button.relativePosition = verticalLayout ? new Vector3(0f, (36f * index) + 22f) : new Vector3((36f * index) + 22f, 0f);
+
+                if (doubleRibbonLayout)
+                {
+                    _button.relativePosition = verticalLayout ? new Vector3(36f * (index % 2) + 1.5f, 36f * (index / 2) + 36f) : new Vector3(36f * (index / 2) + 36f, 36f * (index % 2) + 1.5f);
+                }
+                else
+                {
+                    _button.relativePosition = verticalLayout ? new Vector3(1.5f, 36f * index + 36f) : new Vector3(36f * index + 36f, 1.5f);
+                }
 
                 _button.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
                 _button.normalFgSprite = spriteName;
@@ -116,7 +132,7 @@ namespace WatchIt
             }
         }
 
-        private void CreateNumericalDigits(UIComponent parent, int anchor, int index)
+        private void CreateNumericalDigits(UIComponent parent, int anchor, bool verticalLayout, bool doubleRibbonLayout, int index)
         {
             try
             {
@@ -132,25 +148,41 @@ namespace WatchIt
                 _label.width = parent.width;
                 _label.verticalAlignment = UIVerticalAlignment.Bottom;
 
-                if (anchor == 1)
+                if (doubleRibbonLayout)
                 {
-                    _label.textAlignment = UIHorizontalAlignment.Right;
-                    _label.relativePosition = new Vector3(0f - parent.width * 1.1f, parent.height / 2 - _label.height / 2);
-                }
-                else if(anchor == 2)
-                {
-                    _label.textAlignment = UIHorizontalAlignment.Left;
-                    _label.relativePosition = new Vector3(parent.width * 1.1f, parent.height / 2 - _label.height / 2);
-                }
-                else if (anchor == 3)
-                {
-                    _label.textAlignment = UIHorizontalAlignment.Center;
-                    _label.relativePosition = new Vector3(parent.width / 2 - _label.width / 2, 0f - _label.height);
+                    if (index % 2 == 0)
+                    {
+                        _label.textAlignment = verticalLayout ? UIHorizontalAlignment.Right : UIHorizontalAlignment.Center;
+                        _label.relativePosition = verticalLayout ? new Vector3(0f - parent.width * 1.1f, parent.height / 2 - _label.height / 2) : new Vector3(parent.width / 2 - _label.width / 2, 0f - _label.height);
+                    }
+                    else
+                    {
+                        _label.textAlignment = verticalLayout ? UIHorizontalAlignment.Left : UIHorizontalAlignment.Center;
+                        _label.relativePosition = verticalLayout ? new Vector3(parent.width * 1.1f, parent.height / 2 - _label.height / 2) : new Vector3(parent.width / 2 - _label.width / 2, parent.height);
+                    }
                 }
                 else
                 {
-                    _label.textAlignment = UIHorizontalAlignment.Center;
-                    _label.relativePosition = new Vector3(parent.width / 2 - _label.width / 2, parent.height);
+                    if (anchor == 1)
+                    {
+                        _label.textAlignment = UIHorizontalAlignment.Right;
+                        _label.relativePosition = new Vector3(0f - parent.width * 1.1f, parent.height / 2 - _label.height / 2);
+                    }
+                    else if (anchor == 2)
+                    {
+                        _label.textAlignment = UIHorizontalAlignment.Left;
+                        _label.relativePosition = new Vector3(parent.width * 1.1f, parent.height / 2 - _label.height / 2);
+                    }
+                    else if (anchor == 3)
+                    {
+                        _label.textAlignment = UIHorizontalAlignment.Center;
+                        _label.relativePosition = new Vector3(parent.width / 2 - _label.width / 2, 0f - _label.height);
+                    }
+                    else
+                    {
+                        _label.textAlignment = UIHorizontalAlignment.Center;
+                        _label.relativePosition = new Vector3(parent.width / 2 - _label.width / 2, parent.height);
+                    }
                 }
             }
             catch (Exception e)
@@ -241,9 +273,6 @@ namespace WatchIt
 
         private void GetInfoModes(string name, out InfoManager.InfoMode infoMode, out InfoManager.SubInfoMode subInfoMode)
         {
-            infoMode = InfoManager.InfoMode.None;
-            subInfoMode = InfoManager.SubInfoMode.None;
-
             switch (name)
             {
                 case "Electricity":
@@ -306,12 +335,20 @@ namespace WatchIt
                     infoMode = InfoManager.InfoMode.Health;
                     subInfoMode = InfoManager.SubInfoMode.DeathCare;
                     break;
-                case "Health":
-                    infoMode = InfoManager.InfoMode.Health;
-                    subInfoMode = InfoManager.SubInfoMode.HealthCare;
-                    break;
                 case "Traffic":
                     infoMode = InfoManager.InfoMode.Traffic;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
+                case "GroundPollution":
+                    infoMode = InfoManager.InfoMode.Pollution;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
+                case "DrinkingWaterPollution":
+                    infoMode = InfoManager.InfoMode.Pollution;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
+                case "NoisePollution":
+                    infoMode = InfoManager.InfoMode.NoisePollution;
                     subInfoMode = InfoManager.SubInfoMode.Default;
                     break;
                 case "Fire":
@@ -326,6 +363,18 @@ namespace WatchIt
                     infoMode = InfoManager.InfoMode.Density;
                     subInfoMode = InfoManager.SubInfoMode.Default;
                     break;
+                case "Health":
+                    infoMode = InfoManager.InfoMode.Health;
+                    subInfoMode = InfoManager.SubInfoMode.HealthCare;
+                    break;
+                case "CityAttractiveness":
+                    infoMode = InfoManager.InfoMode.Tourism;
+                    subInfoMode = InfoManager.SubInfoMode.Attractiveness;
+                    break;
+                case "Happiness":
+                    infoMode = InfoManager.InfoMode.Happiness;
+                    subInfoMode = InfoManager.SubInfoMode.Default;
+                    break;
                 default:
                     infoMode = InfoManager.InfoMode.None;
                     subInfoMode = InfoManager.SubInfoMode.None;
@@ -335,8 +384,7 @@ namespace WatchIt
 
         private int GetPercentage(string name)
         {
-            int percentage = 0;
-
+            int percentage;
             switch (name)
             {
                 case "Electricity":
@@ -366,13 +414,21 @@ namespace WatchIt
                     GetCapacityAndNeed(name, out int capacityUsage, out int needUsage);
                     percentage = GetUsagePercentage(capacityUsage, needUsage);
                     break;
-                case "Health":
-                    int health = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_residentialData.m_finalHealth;
-                    percentage = health;
-                    break;
                 case "Traffic":
                     int traffic = (int)Singleton<VehicleManager>.instance.m_lastTrafficFlow;
                     percentage = traffic;
+                    break;
+                case "GroundPollution":
+                    int groundPollution = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].GetGroundPollution();
+                    percentage = groundPollution;
+                    break;
+                case "DrinkingWaterPollution":
+                    int drinkingWaterPollution = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].GetWaterPollution();
+                    percentage = drinkingWaterPollution;
+                    break;
+                case "NoisePollution":
+                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.NoisePollution, out int noisePollution);
+                    percentage = (int)Mathf.Clamp(noisePollution, 0f, 100f);
                     break;
                 case "Fire":
                     Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.FireHazard, out int fireHazard);
@@ -385,6 +441,20 @@ namespace WatchIt
                 case "Unemployment":
                     int unemployment = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].GetUnemployment();
                     percentage = unemployment;
+                    break;
+                case "Health":
+                    int health = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_residentialData.m_finalHealth;
+                    percentage = health;
+                    break;
+                case "CityAttractiveness":
+                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.Attractiveness, out int attractiveness);
+                    Singleton<ImmaterialResourceManager>.instance.CheckTotalResource(ImmaterialResourceManager.Resource.LandValue, out int landValue);
+                    attractiveness += landValue;
+                    percentage = (int)Mathf.Clamp(100 * attractiveness / Mathf.Max(attractiveness + 200, 200), 0f, 100f);
+                    break;
+                case "Happiness":
+                    int happiness = Singleton<DistrictManager>.instance.m_districts.m_buffer[0].m_officeData.m_finalHappiness;
+                    percentage = happiness;
                     break;
                 default:
                     percentage = 0;

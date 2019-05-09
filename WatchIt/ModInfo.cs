@@ -55,6 +55,27 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
+            selected = ModConfig.Instance.ShowDragIcon;
+            group.AddCheckbox("Show Drag Icon", selected, sel =>
+            {
+                ModConfig.Instance.ShowDragIcon = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.VerticalLayout;
+            group.AddCheckbox("Vertical Layout", selected, sel =>
+            {
+                ModConfig.Instance.VerticalLayout = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.DoubleRibbonLayout;
+            group.AddCheckbox("Double Ribbon Layout", selected, sel =>
+            {
+                ModConfig.Instance.DoubleRibbonLayout = sel;
+                ModConfig.Instance.Save();
+            });
+
             selectedValue = ModConfig.Instance.RefreshInterval;
             group.AddTextfield("Refresh Interval (in seconds)", selectedValue.ToString(), sel =>
             {
@@ -71,7 +92,7 @@ namespace WatchIt
             });
 
             selectedIndex = GetSelectedOptionIndex(NumericalDigitsAnchorValues, ModConfig.Instance.NumericalDigitsAnchor);
-            group.AddDropdown("Numerical Digits Anchor", NumericalDigitsAnchorLabels, selectedIndex, sel =>
+            group.AddDropdown("Numerical Digits Anchor (Only for Single Ribbon Layout)", NumericalDigitsAnchorLabels, selectedIndex, sel =>
             {
                 ModConfig.Instance.NumericalDigitsAnchor = NumericalDigitsAnchorValues[sel];
                 ModConfig.Instance.Save();
@@ -206,17 +227,31 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
-            selected = ModConfig.Instance.HealthAverage;
-            group.AddCheckbox("Health Average", selected, sel =>
-            {
-                ModConfig.Instance.HealthAverage = sel;
-                ModConfig.Instance.Save();
-            });
-
             selected = ModConfig.Instance.TrafficFlow;
             group.AddCheckbox("Traffic Flow", selected, sel =>
             {
                 ModConfig.Instance.TrafficFlow = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.GroundPollution;
+            group.AddCheckbox("Ground Pollution", selected, sel =>
+            {
+                ModConfig.Instance.GroundPollution = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.DrinkingWaterPollution;
+            group.AddCheckbox("Drinking Water Pollution", selected, sel =>
+            {
+                ModConfig.Instance.DrinkingWaterPollution = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.NoisePollution;
+            group.AddCheckbox("Noise Pollution", selected, sel =>
+            {
+                ModConfig.Instance.NoisePollution = sel;
                 ModConfig.Instance.Save();
             });
 
@@ -238,6 +273,27 @@ namespace WatchIt
             group.AddCheckbox("Unemployment Rate", selected, sel =>
             {
                 ModConfig.Instance.UnemploymentRate = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.HealthAverage;
+            group.AddCheckbox("Health Average", selected, sel =>
+            {
+                ModConfig.Instance.HealthAverage = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.CityAttractiveness;
+            group.AddCheckbox("City Attractiveness", selected, sel =>
+            {
+                ModConfig.Instance.CityAttractiveness = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.Happiness;
+            group.AddCheckbox("Happiness", selected, sel =>
+            {
+                ModConfig.Instance.Happiness = sel;
                 ModConfig.Instance.Save();
             });
 
