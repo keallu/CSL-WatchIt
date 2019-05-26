@@ -220,6 +220,13 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
+            selected = ModConfig.Instance.LibraryUsage;
+            group.AddCheckbox("Library Usage", selected, sel =>
+            {
+                ModConfig.Instance.LandfillUsage = sel;
+                ModConfig.Instance.Save();
+            });
+
             selected = ModConfig.Instance.CemeteryUsage;
             group.AddCheckbox("Cemetery Usage", selected, sel =>
             {

@@ -331,6 +331,10 @@ namespace WatchIt
                     infoMode = InfoManager.InfoMode.Garbage;
                     subInfoMode = InfoManager.SubInfoMode.Default;
                     break;
+                case "Library":
+                    infoMode = InfoManager.InfoMode.Education;
+                    subInfoMode = InfoManager.SubInfoMode.LibraryEducation;
+                    break;
                 case "Cemetery":
                     infoMode = InfoManager.InfoMode.Health;
                     subInfoMode = InfoManager.SubInfoMode.DeathCare;
@@ -410,6 +414,7 @@ namespace WatchIt
                     percentage = (int)Mathf.Clamp(policeDepartment, 0f, 100f);
                     break;
                 case "Landfill":
+                case "Library":
                 case "Cemetery":
                     GetCapacityAndNeed(name, out int capacityUsage, out int needUsage);
                     percentage = GetUsagePercentage(capacityUsage, needUsage);
@@ -496,6 +501,7 @@ namespace WatchIt
                     case "ElementarySchool":
                         capacity = district.GetEducation1Capacity();
                         need = district.GetEducation1Need();
+                        need = district.GetEducation1Need();
                         break;
                     case "HighSchool":
                         capacity = district.GetEducation2Capacity();
@@ -524,6 +530,10 @@ namespace WatchIt
                     case "Landfill":
                         capacity = district.GetGarbageCapacity();
                         need = district.GetGarbageAmount();
+                        break;
+                    case "Library":
+                        capacity = district.GetLibraryCapacity();
+                        need = district.GetLibraryVisitorCount();
                         break;
                     case "Cemetery":
                         capacity = district.GetDeadCapacity();
@@ -558,7 +568,15 @@ namespace WatchIt
 
         private int GetUsagePercentage(int capacity, int need)
         {
-            return (int)((float)need / (float)capacity * 100f);
+            if (need != 0)
+            {
+                return (int)((float)need / (float)capacity * 100f);
+            }
+            if (capacity == 0)
+            {
+                return 0;
+            }
+            return 100;
         }
 
         private string GetAspectSpriteName(int percentage)

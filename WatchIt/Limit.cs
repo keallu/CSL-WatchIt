@@ -26,8 +26,7 @@ namespace WatchIt
                 _panel = UIUtils.CreatePanel(parent, name);
                 _panel.anchor = UIAnchorStyle.Top | UIAnchorStyle.Left;
                 _panel.backgroundSprite = "InfoviewPanel";
-                _panel.color = new Color32(49, 52, 58, 255);
-                _panel.opacity = index % 2 == 0 ? 1f : 0.5f;
+                _panel.color = index % 2 != 0 ? new Color32(56, 61, 63, 255) : new Color32(49, 52, 58, 255);
                 _panel.height = 25f;
                 _panel.width = parent.width - 50f;
                 _panel.relativePosition = new Vector3(25f, 75f + (25f * index));
@@ -37,8 +36,7 @@ namespace WatchIt
                 };
                 _panel.eventMouseLeave += (component, eventParam) =>
                 {
-                    _panel.color = new Color32(49, 52, 58, 255);
-                    _panel.opacity = index % 2 == 0 ? 1f : 0.5f;
+                    _panel.color = index % 2 != 0 ? new Color32(56, 61, 63, 255) : new Color32(49, 52, 58, 255);
                 };
 
                 _name = UIUtils.CreateLabel(_panel, "LimitName", name);
@@ -114,7 +112,30 @@ namespace WatchIt
         {
             try
             {
-                UnityEngine.Object.Destroy(_panel);
+                if (_name != null)
+                {
+                    UnityEngine.Object.Destroy(_name);
+                }
+                if (_amount != null)
+                {
+                    UnityEngine.Object.Destroy(_amount);
+                }
+                if (_capacity != null)
+                {
+                    UnityEngine.Object.Destroy(_capacity);
+                }
+                if (_consumption != null)
+                {
+                    UnityEngine.Object.Destroy(_consumption);
+                }
+                if (_modded != null)
+                {
+                    UnityEngine.Object.Destroy(_modded);
+                }
+                if (_panel != null)
+                {
+                    UnityEngine.Object.Destroy(_panel);
+                }
             }
             catch (Exception e)
             {
@@ -124,36 +145,21 @@ namespace WatchIt
 
         private void GetAmountAndCapacity(string name, out int amount, out int capacity, out bool modded)
         {
-            amount = 0;
-            capacity = 0;
-            modded = false;
-
-            GameAreaManager gameAreaManager = null;
-            BuildingManager buildingManager = null;
-            CitizenManager citizenManager = null;
-            DisasterManager disasterManager = null;
-            DistrictManager districtManager = null;
-            EventManager eventManager = null;
-            EconomyManager economyManager = null;
-            NetManager netManager = null;
-            PathManager pathManager = null;
-            PropManager propManager = null;
-            AudioManager audioManager = null;
-            TransportManager transportManager = null;
-            TreeManager treeManager = null;
-            VehicleManager vehicleManager = null;
-            ZoneManager zoneManager = null;
+            CitizenManager citizenManager;
+            NetManager netManager;
+            AudioManager audioManager;
+            VehicleManager vehicleManager;
 
             switch (name)
             {
                 case "Areas":
-                    gameAreaManager = Singleton<GameAreaManager>.instance;
+                    GameAreaManager gameAreaManager = Singleton<GameAreaManager>.instance;
                     amount = gameAreaManager.m_areaCount;
                     capacity = gameAreaManager.m_maxAreaCount;
                     modded = gameAreaManager.m_maxAreaCount > 9 ? true : false;
                     break;
                 case "Buildings":
-                    buildingManager = Singleton<BuildingManager>.instance;
+                    BuildingManager buildingManager = Singleton<BuildingManager>.instance;
                     amount = buildingManager.m_buildingCount;
                     capacity = BuildingManager.MAX_BUILDING_COUNT;
                     modded = false;
@@ -177,25 +183,25 @@ namespace WatchIt
                     modded = false;
                     break;
                 case "Disasters":
-                    disasterManager = Singleton<DisasterManager>.instance;
+                    DisasterManager disasterManager = Singleton<DisasterManager>.instance;
                     amount = disasterManager.m_disasterCount;
                     capacity = DisasterManager.MAX_DISASTER_COUNT;
                     modded = false;
                     break;
                 case "Districts":
-                    districtManager = Singleton<DistrictManager>.instance;
+                    DistrictManager districtManager = Singleton<DistrictManager>.instance;
                     amount = districtManager.m_districtCount;
                     capacity = DistrictManager.MAX_DISTRICT_COUNT;
                     modded = false;
                     break;
                 case "Events":
-                    eventManager = Singleton<EventManager>.instance;
+                    EventManager eventManager = Singleton<EventManager>.instance;
                     amount = eventManager.m_eventCount;
                     capacity = EventManager.MAX_EVENT_COUNT;
                     modded = false;
                     break;
                 case "Loans":
-                    economyManager = Singleton<EconomyManager>.instance;
+                    EconomyManager economyManager = Singleton<EconomyManager>.instance;
                     amount = economyManager.CountLoans();
                     capacity = EconomyManager.MAX_LOANS;
                     modded = false;
@@ -219,13 +225,13 @@ namespace WatchIt
                     modded = false;
                     break;
                 case "Path Units":
-                    pathManager = Singleton<PathManager>.instance;
+                    PathManager pathManager = Singleton<PathManager>.instance;
                     amount = pathManager.m_pathUnitCount;
                     capacity = PathManager.MAX_PATHUNIT_COUNT;
                     modded = false;
                     break;
                 case "Props":
-                    propManager = Singleton<PropManager>.instance;
+                    PropManager propManager = Singleton<PropManager>.instance;
                     amount = propManager.m_propCount;
                     capacity = PropManager.MAX_PROP_COUNT;
                     modded = false;
@@ -243,13 +249,13 @@ namespace WatchIt
                     modded = false;
                     break;
                 case "Transport Lines":
-                    transportManager = Singleton<TransportManager>.instance;
+                    TransportManager transportManager = Singleton<TransportManager>.instance;
                     amount = transportManager.m_lineCount;
                     capacity = TransportManager.MAX_LINE_COUNT;
                     modded = false;
                     break;
                 case "Trees":
-                    treeManager = Singleton<TreeManager>.instance;
+                    TreeManager treeManager = Singleton<TreeManager>.instance;
                     amount = treeManager.m_treeCount;
                     capacity = treeManager.m_trees.m_size > 262144 ? (int)treeManager.m_trees.m_size : TreeManager.MAX_TREE_COUNT;
                     modded = treeManager.m_trees.m_size > 262144 ? true : false;
@@ -267,7 +273,7 @@ namespace WatchIt
                     modded = false;
                     break;
                 case "Zoned Blocks":
-                    zoneManager = Singleton<ZoneManager>.instance;
+                    ZoneManager zoneManager = Singleton<ZoneManager>.instance;
                     amount = zoneManager.m_blockCount;
                     capacity = ZoneManager.MAX_BLOCK_COUNT;
                     modded = false;

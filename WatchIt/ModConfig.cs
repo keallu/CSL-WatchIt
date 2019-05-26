@@ -32,6 +32,7 @@
         public bool JailAvailability { get; set; } = true;
         public bool HeatingAvailability { get; set; } = true;
         public bool LandfillUsage { get; set; } = true;
+        public bool LibraryUsage { get; set; } = true;
         public bool CemeteryUsage { get; set; } = true;
         public bool TrafficFlow { get; set; } = true;
         public bool GroundPollution { get; set; } = true;

@@ -67,6 +67,48 @@ namespace WatchIt
         public override void OnDestroy()
         {
             base.OnDestroy();
+
+            foreach (Limit limit in _limits)
+            {
+                limit.DestroyLimit();
+            }
+
+            if (_title != null)
+            {
+                Destroy(_title);
+            }
+            if (_close != null)
+            {
+                Destroy(_close);
+            }
+            if (_dragHandle != null)
+            {
+                Destroy(_dragHandle);
+            }
+            if (_header != null)
+            {
+                Destroy(_header);
+            }
+            if (_headerName != null)
+            {
+                Destroy(_headerName);
+            }
+            if (_headerAmount != null)
+            {
+                Destroy(_headerAmount);
+            }
+            if (_headerCapacity != null)
+            {
+                Destroy(_headerCapacity);
+            }
+            if (_headerComsumption != null)
+            {
+                Destroy(_headerComsumption);
+            }
+            if (_lastUpdated != null)
+            {
+                Destroy(_lastUpdated);
+            }
         }
 
         private void CreateUI()

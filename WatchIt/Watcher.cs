@@ -22,7 +22,7 @@ namespace WatchIt
 
         private List<Watch> _watches;
 
-        private void Awake()
+        public void Awake()
         {
             try
             {
@@ -31,7 +31,7 @@ namespace WatchIt
                     _esc = GameObject.Find("Esc").GetComponent<UIButton>();
                     WatchManager.Instance.OnOffButtonDefaultPositionX = _esc.absolutePosition.x - 300f;
                     WatchManager.Instance.OnOffButtonDefaultPositionY = _esc.absolutePosition.y;
-                    WatchManager.Instance.DefaultPositionX = _esc.absolutePosition.x + 13f;
+                    WatchManager.Instance.DefaultPositionX = ModConfig.Instance.DoubleRibbonLayout ? _esc.absolutePosition.x - 29f : _esc.absolutePosition.x - 13f;
                     WatchManager.Instance.DefaultPositionY = _esc.absolutePosition.y + 50f;
                 }
 
@@ -65,7 +65,7 @@ namespace WatchIt
             }
         }
 
-        private void OnEnable()
+        public void OnEnable()
         {
             try
             {
@@ -77,7 +77,7 @@ namespace WatchIt
             }
         }
 
-        private void Start()
+        public void Start()
         {
             try
             {
@@ -89,7 +89,7 @@ namespace WatchIt
             }
         }
 
-        private void Update()
+        public void Update()
         {
             try
             {
@@ -121,7 +121,7 @@ namespace WatchIt
             }
         }
 
-        private void OnDisable()
+        public void OnDisable()
         {
             try
             {
@@ -133,7 +133,7 @@ namespace WatchIt
             }
         }
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
             try
             {
@@ -181,6 +181,7 @@ namespace WatchIt
                         "Jail",
                         "Heating",
                         "Landfill",
+                        "Library",
                         "Cemetery",
                         "Traffic",
                         "GroundPollution",
@@ -420,6 +421,10 @@ namespace WatchIt
                 {
                     _watches.Add(CreateWatch("Landfill", Watch.WatchType.Pillar, "Landfill", "Landfill Usage"));
                 }
+                if (ModConfig.Instance.LibraryUsage)
+                {
+                    _watches.Add(CreateWatch("Library", Watch.WatchType.Pillar, "Library", "Library Usage"));
+                }
                 if (ModConfig.Instance.CemeteryUsage)
                 {
                     _watches.Add(CreateWatch("Cemetery", Watch.WatchType.Pillar, "Cemetery", "Cemetery Usage"));
@@ -466,6 +471,13 @@ namespace WatchIt
                 }
 
                 int buttonIndex = _watches.Count;
+
+                bool numberOfWatchesAreOdd = buttonIndex % 2 != 0 ? true : false;
+
+                if (ModConfig.Instance.DoubleRibbonLayout && !numberOfWatchesAreOdd)
+                {
+                    buttonIndex += 1;
+                }
 
                 if (ModConfig.Instance.ShowGameLimitsButton)
                 {
