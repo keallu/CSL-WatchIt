@@ -223,7 +223,7 @@ namespace WatchIt
             selected = ModConfig.Instance.LibraryUsage;
             group.AddCheckbox("Library Usage", selected, sel =>
             {
-                ModConfig.Instance.LandfillUsage = sel;
+                ModConfig.Instance.LibraryUsage = sel;
                 ModConfig.Instance.Save();
             });
 
