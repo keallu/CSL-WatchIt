@@ -8,7 +8,7 @@ namespace WatchIt
         public static UIPanel CreatePanel(string name)
         {
             UIPanel panel = UIView.GetAView().AddUIComponent(typeof(UIPanel)) as UIPanel;
-            panel.name = name + "Panel";
+            panel.name = name;
 
             return panel;
         }
@@ -16,7 +16,7 @@ namespace WatchIt
         public static UIPanel CreatePanel(UIComponent parent, string name)
         {
             UIPanel panel = parent.AddUIComponent<UIPanel>();
-            panel.name = name + "Panel";
+            panel.name = name;
 
             return panel;
         }
@@ -24,7 +24,7 @@ namespace WatchIt
         public static UILabel CreateLabel(UIComponent parent, string name, string text)
         {
             UILabel label = parent.AddUIComponent<UILabel>();
-            label.name = name + "Label";
+            label.name = name;
             label.text = text;
 
             return label;
@@ -33,7 +33,7 @@ namespace WatchIt
         public static UISprite CreateSprite(UIComponent parent, string name, string spriteName)
         {
             UISprite sprite = parent.AddUIComponent<UISprite>();
-            sprite.name = name + "Sprite";
+            sprite.name = name;
             sprite.spriteName = spriteName;
 
             return sprite;
@@ -42,7 +42,7 @@ namespace WatchIt
         public static UISprite CreateSprite(UIComponent parent, string name, UITextureAtlas atlas, string spriteName)
         {
             UISprite sprite = parent.AddUIComponent<UISprite>();
-            sprite.name = name + "Sprite";
+            sprite.name = name;
             sprite.atlas = atlas;
             sprite.spriteName = spriteName;
 
@@ -52,7 +52,7 @@ namespace WatchIt
         public static UIButton CreateLargeButton(string name)
         {
             UIButton button = UIView.GetAView().AddUIComponent(typeof(UIButton)) as UIButton;
-            button.name = name + "LargeButton";
+            button.name = name;
 
             button.normalBgSprite = "RoundBackBig";
             button.focusedBgSprite = "RoundBackBigFocused";
@@ -66,7 +66,7 @@ namespace WatchIt
         public static UIButton CreateLargeButton(UIComponent parent, string name)
         {
             UIButton button = parent.AddUIComponent<UIButton>();
-            button.name = name + "LargeButton";
+            button.name = name;
 
             button.normalBgSprite = "RoundBackBig";
             button.focusedBgSprite = "RoundBackBigFocused";
@@ -80,7 +80,7 @@ namespace WatchIt
         public static UIButton CreateButton(UIComponent parent, string name, UITextureAtlas atlas, string spriteName)
         {
             UIButton button = parent.AddUIComponent<UIButton>();
-            button.name = name + "Button";
+            button.name = name;
             button.atlas = atlas;
 
             button.normalBgSprite = spriteName + "Normal";
@@ -97,6 +97,15 @@ namespace WatchIt
             UIDragHandle dragHandle = parent.AddUIComponent<UIDragHandle>();
             dragHandle.name = "DragHandle";
             dragHandle.target = parent;
+
+            return dragHandle;
+        }
+
+        public static UIDragHandle CreateDragHandle(UIComponent parent, UIComponent target)
+        {
+            UIDragHandle dragHandle = parent.AddUIComponent<UIDragHandle>();
+            dragHandle.name = "DragHandle";
+            dragHandle.target = target;
 
             return dragHandle;
         }

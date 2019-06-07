@@ -1,19 +1,31 @@
-﻿using ColossalFramework.UI;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace WatchIt
 {
-    public class Watcher : MonoBehaviour
+    public class WatchManager : MonoBehaviour
     {
         private bool _initialized;
         private float _timer;
 
         private UIButton _esc;
-        private UITextureAtlas _textureAtlas;
-        private UIDragHandle _onOffDragHandle;
-        private UIButton _onOffButton;
+        private UITextureAtlas _watchItAtlas;
+        private UITextureAtlas _notificationsAtlas;
+        
+        private UIPanel _warningPanel;
+        private UIButton _warningButton;
+        private UIDragHandle _warningDragHandle;
+        private UIPanel _openClosePanel;
+        private UISprite _warningTop1Sprite;
+        private UILabel _warningTop1Label;
+        private UISprite _warningTop2Sprite;
+        private UILabel _warningTop2Label;
+        private UISprite _warningTop3Sprite;
+        private UILabel _warningTop3Label;
+
         private UIPanel _panel;
         private UIDragHandle _dragHandle;
         private UISprite _dragSprite;
@@ -29,51 +41,15 @@ namespace WatchIt
                 if (_esc == null)
                 {
                     _esc = GameObject.Find("Esc").GetComponent<UIButton>();
-                    WatchManager.Instance.OnOffButtonDefaultPositionX = _esc.absolutePosition.x - 300f;
-                    WatchManager.Instance.OnOffButtonDefaultPositionY = _esc.absolutePosition.y;
-                    WatchManager.Instance.DefaultPositionX = ModConfig.Instance.DoubleRibbonLayout ? _esc.absolutePosition.x - 29f : _esc.absolutePosition.x - 13f;
-                    WatchManager.Instance.DefaultPositionY = _esc.absolutePosition.y + 50f;
+                    WatchProperties.Instance.WarningPanelDefaultPositionX = _esc.absolutePosition.x - 1300f;
+                    WatchProperties.Instance.WarningPanelDefaultPositionY = _esc.absolutePosition.y;
+                    WatchProperties.Instance.PanelDefaultPositionX = ModConfig.Instance.DoubleRibbonLayout ? _esc.absolutePosition.x - 29f : _esc.absolutePosition.x - 13f;
+                    WatchProperties.Instance.PanelDefaultPositionY = _esc.absolutePosition.y + 50f;
                 }
-
-                if (ModConfig.Instance.OnOffButtonPositionX == 0.0f)
-                {
-                    ModConfig.Instance.OnOffButtonPositionX = WatchManager.Instance.OnOffButtonDefaultPositionX;
-                }
-
-                if (ModConfig.Instance.OnOffButtonPositionY == 0.0f)
-                {
-                    ModConfig.Instance.OnOffButtonPositionY = WatchManager.Instance.OnOffButtonDefaultPositionY;
-                }
-
-                if (ModConfig.Instance.PositionX == 0.0f)
-                {
-                    ModConfig.Instance.PositionX = WatchManager.Instance.DefaultPositionX;
-                }
-
-                if (ModConfig.Instance.PositionY == 0.0f)
-                {
-                    ModConfig.Instance.PositionY = WatchManager.Instance.DefaultPositionY;
-                }
-
-                _textureAtlas = LoadResources();
-
-                CreateUI();
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:Awake -> Exception: " + e.Message);
-            }
-        }
-
-        public void OnEnable()
-        {
-            try
-            {
-
-            }
-            catch (Exception e)
-            {
-                Debug.Log("[Watch It!] Watcher:OnEnable -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:Awake -> Exception: " + e.Message);
             }
         }
 
@@ -81,11 +57,34 @@ namespace WatchIt
         {
             try
             {
+                if (ModConfig.Instance.WarningPositionX == 0.0f)
+                {
+                    ModConfig.Instance.WarningPositionX = WatchProperties.Instance.WarningPanelDefaultPositionX;
+                }
 
+                if (ModConfig.Instance.WarningPositionY == 0.0f)
+                {
+                    ModConfig.Instance.WarningPositionY = WatchProperties.Instance.WarningPanelDefaultPositionY;
+                }
+
+                if (ModConfig.Instance.PositionX == 0.0f)
+                {
+                    ModConfig.Instance.PositionX = WatchProperties.Instance.PanelDefaultPositionX;
+                }
+
+                if (ModConfig.Instance.PositionY == 0.0f)
+                {
+                    ModConfig.Instance.PositionY = WatchProperties.Instance.PanelDefaultPositionY;
+                }
+
+                _watchItAtlas = LoadResources();
+                _notificationsAtlas = ResourceLoader.GetAtlas("Notifications");
+
+                CreateUI();
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:Start -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:Start -> Exception: " + e.Message);
             }
         }
 
@@ -102,34 +101,36 @@ namespace WatchIt
                 }
                 else
                 {
-                    if (ModConfig.Instance.Visible)
+                    _timer += Time.deltaTime;
+
+                    if (_timer > ModConfig.Instance.RefreshInterval)
                     {
-                        _timer += Time.deltaTime;
+                        _timer -= ModConfig.Instance.RefreshInterval;
 
-                        if (_timer > ModConfig.Instance.RefreshInterval)
+                        if (ModConfig.Instance.ShowWarningPanel)
                         {
-                            _timer -= ModConfig.Instance.RefreshInterval;
+                            UpdateWarnings();
+                        }
 
+                        if (ModConfig.Instance.ShowPanel)
+                        {
                             UpdateWatches();
                         }
                     }
                 }
+
+                if (ModConfig.Instance.WarningKeyMappingEnabled && Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.W))
+                {
+                    ToggleWarningPanel();
+                }
+                else if (ModConfig.Instance.KeyMappingEnabled && Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.W))
+                {
+                    TogglePanel();
+                }
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:Update -> Exception: " + e.Message);
-            }
-        }
-
-        public void OnDisable()
-        {
-            try
-            {
-
-            }
-            catch (Exception e)
-            {
-                Debug.Log("[Watch It!] Watcher:OnDisable -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:Update -> Exception: " + e.Message);
             }
         }
 
@@ -137,14 +138,74 @@ namespace WatchIt
         {
             try
             {
+                foreach (Watch watch in _watches)
+                {
+                    watch.DestroyWatch();
+                }
+                if (_limitsButton != null)
+                {
+                    Destroy(_limitsButton);
+                }
+                if (_statisticsButton != null)
+                {
+                    Destroy(_statisticsButton);
+                }
+                if (_dragHandle != null)
+                {
+                    Destroy(_dragHandle);
+                }
+                if (_dragSprite != null)
+                {
+                    Destroy(_dragSprite);
+                }
                 if (_panel != null)
                 {
                     Destroy(_panel);
                 }
+                if (_warningTop3Label != null)
+                {
+                    Destroy(_warningTop3Label);
+                }
+                if (_warningTop3Sprite != null)
+                {
+                    Destroy(_warningTop3Sprite);
+                }
+                if (_warningTop2Label != null)
+                {
+                    Destroy(_warningTop2Label);
+                }
+                if (_warningTop2Sprite != null)
+                {
+                    Destroy(_warningTop2Sprite);
+                }
+                if (_warningTop1Label != null)
+                {
+                    Destroy(_warningTop1Label);
+                }
+                if (_warningTop1Sprite != null)
+                {
+                    Destroy(_warningTop1Sprite);
+                }
+                if (_openClosePanel != null)
+                {
+                    Destroy(_openClosePanel);
+                }
+                if (_warningDragHandle != null)
+                {
+                    Destroy(_warningDragHandle);
+                }
+                if (_warningButton != null)
+                {
+                    Destroy(_warningButton);
+                }
+                if (_warningPanel != null)
+                {
+                    Destroy(_warningPanel);
+                }
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:OnDestroy -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:OnDestroy -> Exception: " + e.Message);
             }
         }
 
@@ -152,7 +213,7 @@ namespace WatchIt
         {
             try
             {
-                if (_textureAtlas == null)
+                if (_watchItAtlas == null)
                 {
                     string[] spriteNames = new string[]
                     {
@@ -197,14 +258,14 @@ namespace WatchIt
                         "Limits"
                     };
 
-                    _textureAtlas = ResourceLoader.CreateTextureAtlas("WatchItAtlas", spriteNames, "WatchIt.Icons.");
+                    _watchItAtlas = ResourceLoader.CreateTextureAtlas("WatchItAtlas", spriteNames, "WatchIt.Icons.");
                 }
 
-                return _textureAtlas;
+                return _watchItAtlas;
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:LoadResources -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:LoadResources -> Exception: " + e.Message);
                 return null;
             }
         }
@@ -213,41 +274,79 @@ namespace WatchIt
         {
             try
             {
-                _onOffButton = UIUtils.CreateLargeButton("WatchIt");
-                _onOffButton.size = new Vector2(46f, 46f);
-                _onOffButton.absolutePosition = new Vector3(ModConfig.Instance.OnOffButtonPositionX, ModConfig.Instance.OnOffButtonPositionY);
-                _onOffButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
-                _onOffButton.normalFgSprite = "LineDetailButton";
-                _onOffButton.focusedFgSprite = "LineDetailButton";
-                _onOffButton.hoveredFgSprite = "LineDetailButton";
-                _onOffButton.pressedFgSprite = "LineDetailButton";
-                _onOffButton.disabledFgSprite = "LineDetailButton";
-                _onOffButton.eventClick += (component, eventParam) =>
+                _warningPanel = UIUtils.CreatePanel("WatchItWarningPanel");
+                _warningPanel.zOrder = 0;
+                _warningPanel.size = new Vector2(46f, 46f);
+
+                _openClosePanel = UIUtils.CreatePanel(_warningPanel, "OpenClosePanel");
+                _openClosePanel.backgroundSprite = "WarningPhasePanel";
+                _openClosePanel.size = new Vector2(250f, 46f);
+                _openClosePanel.color = new Color32(82, 82, 82, 255);
+                _openClosePanel.relativePosition = new Vector3(23f, 0f);
+                _openClosePanel.isInteractive = false;
+                _openClosePanel.isVisible = false;
+
+                _warningTop1Sprite = UIUtils.CreateSprite(_openClosePanel, "Top1Sprite", "BuildingEventSad");
+                _warningTop1Sprite.atlas = _notificationsAtlas;
+                _warningTop1Sprite.size = new Vector2(25f, 25f);
+                _warningTop1Sprite.relativePosition = new Vector3(25f, 10.5f);
+
+                _warningTop1Label = UIUtils.CreateLabel(_openClosePanel, "Top1Label", "");
+                _warningTop1Label.relativePosition = new Vector3(55f, 15f);
+
+                _warningTop2Sprite = UIUtils.CreateSprite(_openClosePanel, "Top2Sprite", "BuildingEventSad");
+                _warningTop2Sprite.atlas = _notificationsAtlas;
+                _warningTop2Sprite.size = new Vector2(25f, 25f);
+                _warningTop2Sprite.relativePosition = new Vector3(100f, 10.5f);
+
+                _warningTop2Label = UIUtils.CreateLabel(_openClosePanel, "Top2Label", "");
+                _warningTop2Label.relativePosition = new Vector3(130f, 15f);
+
+                _warningTop3Sprite = UIUtils.CreateSprite(_openClosePanel, "Top3Sprite", "BuildingEventSad");
+                _warningTop3Sprite.atlas = _notificationsAtlas;
+                _warningTop3Sprite.size = new Vector2(25f, 25f);
+                _warningTop3Sprite.relativePosition = new Vector3(175f, 10.5f);
+
+                _warningTop3Label = UIUtils.CreateLabel(_openClosePanel, "Top3Label", "");
+                _warningTop3Label.relativePosition = new Vector3(205f, 15f);
+
+                _warningButton = UIUtils.CreateLargeButton(_warningPanel, "WarningButton");
+                _warningButton.size = new Vector2(46f, 46f);
+                _warningButton.relativePosition = new Vector3(0f, 0f);
+                _warningButton.foregroundSpriteMode = UIForegroundSpriteMode.Fill;
+                _warningButton.normalFgSprite = "LineDetailButton";
+                _warningButton.focusedFgSprite = "LineDetailButton";
+                _warningButton.hoveredFgSprite = "LineDetailButton";
+                _warningButton.pressedFgSprite = "LineDetailButton";
+                _warningButton.disabledFgSprite = "LineDetailButton";
+                _warningButton.eventClick += (component, eventParam) =>
                 {
-                    ModConfig.Instance.Visible = !ModConfig.Instance.Visible;
-                    ModConfig.Instance.Save();
+                    if (!eventParam.used)
+                    {
+                        _openClosePanel.isVisible = !_openClosePanel.isVisible;
 
-                    _onOffButton.Unfocus();
-                    _onOffButton.normalBgSprite = ModConfig.Instance.Visible ? "RoundBackBigFocused" : "RoundBackBig";
+                        _warningButton.Unfocus();
+                        _warningButton.normalBgSprite = _openClosePanel.isVisible ? "RoundBackBigFocused" : "RoundBackBig";
 
-                    _panel.isVisible = ModConfig.Instance.Visible;
+                        eventParam.Use();
+                    }
                 };
 
-                _onOffDragHandle = UIUtils.CreateDragHandle(_onOffButton);
-                _onOffDragHandle.tooltip = "Drag to move button";
-                _onOffDragHandle.size = new Vector2(46f, 46f);
-                _onOffDragHandle.relativePosition = new Vector3(0f, 0f);
-                _onOffDragHandle.eventMouseUp += (component, eventParam) =>
+                _warningDragHandle = UIUtils.CreateDragHandle(_warningButton, _warningPanel);
+                _warningDragHandle.tooltip = "Drag to move button";
+                _warningDragHandle.size = new Vector2(46f, 46f);
+                _warningDragHandle.relativePosition = new Vector3(0f, 0f);
+                _warningDragHandle.eventMouseUp += (component, eventParam) =>
                 {
-                    ModConfig.Instance.OnOffButtonPositionX = _onOffButton.absolutePosition.x;
-                    ModConfig.Instance.OnOffButtonPositionY = _onOffButton.absolutePosition.y;
+                    ModConfig.Instance.WarningPositionX = _warningPanel.absolutePosition.x;
+                    ModConfig.Instance.WarningPositionY = _warningPanel.absolutePosition.y;
                     ModConfig.Instance.Save();
                 };
 
-                _panel = UIUtils.CreatePanel("WatchIt");
+                _panel = UIUtils.CreatePanel("WatchItPanel");
+                _panel.zOrder = 0;
                 _panel.autoSize = false;
                 _panel.autoLayout = false;
-                _panel.absolutePosition = new Vector3(ModConfig.Instance.PositionX, ModConfig.Instance.PositionY);
                 _panel.eventMouseEnter += (component, eventParam) =>
                 {
                     _panel.opacity = ModConfig.Instance.OpacityWhenHover;
@@ -276,7 +375,7 @@ namespace WatchIt
                     ModConfig.Instance.Save();
                 };
 
-                _dragSprite = UIUtils.CreateSprite(_panel, "Drag", _textureAtlas, "Drag");
+                _dragSprite = UIUtils.CreateSprite(_panel, "Drag", _watchItAtlas, "Drag");
                 _dragSprite.isInteractive = false;
                 _dragSprite.size = new Vector2(30f, 30f);
                 _dragSprite.relativePosition = new Vector3(3f, 3f);
@@ -285,7 +384,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:CreateUI -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:CreateUI -> Exception: " + e.Message);
             }
         }
 
@@ -293,15 +392,12 @@ namespace WatchIt
         {
             try
             {
-                _onOffButton.isVisible = ModConfig.Instance.ShowOnOffButton ? true : false;
-                _onOffButton.normalBgSprite = ModConfig.Instance.Visible ? "RoundBackBigFocused" : "RoundBackBig";
-                _onOffButton.zOrder = 0;
-                _onOffButton.absolutePosition = new Vector3(ModConfig.Instance.OnOffButtonPositionX, ModConfig.Instance.OnOffButtonPositionY);
+                _warningPanel.absolutePosition = new Vector3(ModConfig.Instance.WarningPositionX, ModConfig.Instance.WarningPositionY);
+                _warningPanel.isVisible = ModConfig.Instance.ShowWarningPanel;
 
-                _panel.isVisible = ModConfig.Instance.Visible;
-                _panel.opacity = ModConfig.Instance.Opacity;
-                _panel.zOrder = 0;
                 _panel.absolutePosition = new Vector3(ModConfig.Instance.PositionX, ModConfig.Instance.PositionY);
+                _panel.isVisible = ModConfig.Instance.ShowPanel;
+                _panel.opacity = ModConfig.Instance.Opacity;
 
                 if (ModConfig.Instance.VerticalLayout)
                 {
@@ -334,17 +430,99 @@ namespace WatchIt
                     _dragSprite.relativePosition = new Vector3(3f, 3f);
                 }
 
-                CreateOrUpdatePanelButtons();
+                CreateOrUpdateWatchPanelButtons();
 
                 UpdateWatches();
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:UpdateUI -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:UpdateUI -> Exception: " + e.Message);
             }
         }
 
-        private void CreateOrUpdatePanelButtons()
+        private void ToggleWarningPanel()
+        {
+            try
+            {
+                _warningPanel.isVisible = !_warningPanel.isVisible;
+                ModConfig.Instance.ShowWarningPanel = _warningPanel.isVisible;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] ResizeManager:ToggleWarningPanel -> Exception: " + e.Message);
+            }
+        }
+
+        private void TogglePanel()
+        {
+            try
+            {
+                _panel.isVisible = !_panel.isVisible;
+                ModConfig.Instance.ShowPanel = _panel.isVisible;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] ResizeManager:TogglePanel -> Exception: " + e.Message);
+            }
+        }
+
+        private void UpdateWarnings()
+        {
+            try
+            {
+                _warningTop1Sprite.isVisible = false;
+                _warningTop1Label.isVisible = false;
+                _warningTop2Sprite.isVisible = false;
+                _warningTop2Label.isVisible = false;
+                _warningTop3Sprite.isVisible = false;
+                _warningTop3Label.isVisible = false;
+
+                List<Warning> warnings = WatchUtils.GetWarnings(ModConfig.Instance.WarningBuildings, ModConfig.Instance.WarningNetworks, ModConfig.Instance.WarningThreshold);
+
+                if (warnings != null && warnings.Count > 0)
+                {
+                    _openClosePanel.isVisible = true;
+                    _warningButton.normalBgSprite = "RoundBackBigFocused";                    
+
+                    string i = Utils.GetNameByValue(warnings[0].Problem, "Normal");
+
+                    _warningTop1Sprite.spriteName = Utils.GetNameByValue(warnings[0].Problem, "Normal");
+                    _warningTop1Sprite.tooltip = TextUtils.AddSpacesBeforeCapitalLetters(Utils.GetNameByValue(warnings[0].Problem, "Text"));
+                    _warningTop1Label.text = warnings[0].Count.ToString();
+                    _warningTop1Sprite.isVisible = true;
+                    _warningTop1Label.isVisible = true;
+
+                    if (warnings.Count > 1)
+                    {
+                        _warningTop2Sprite.spriteName = Utils.GetNameByValue(warnings[1].Problem, "Normal");
+                        _warningTop2Sprite.tooltip = TextUtils.AddSpacesBeforeCapitalLetters(Utils.GetNameByValue(warnings[1].Problem, "Text"));
+                        _warningTop2Label.text = warnings[1].Count.ToString();
+                        _warningTop2Sprite.isVisible = true;
+                        _warningTop2Label.isVisible = true;
+                    }
+
+                    if (warnings.Count > 2)
+                    {
+                        _warningTop3Sprite.spriteName = Utils.GetNameByValue(warnings[2].Problem, "Normal");
+                        _warningTop3Sprite.tooltip = TextUtils.AddSpacesBeforeCapitalLetters(Utils.GetNameByValue(warnings[2].Problem, "Text"));
+                        _warningTop3Label.text = warnings[2].Count.ToString();
+                        _warningTop3Sprite.isVisible = true;
+                        _warningTop3Label.isVisible = true;
+                    }
+                }
+                else
+                {
+                    _openClosePanel.isVisible = false;
+                    _warningButton.normalBgSprite = "RoundBackBig";
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] WatchManager:UpdateWarnings -> Exception: " + e.Message);
+            }
+        }
+
+        private void CreateOrUpdateWatchPanelButtons()
         {
             try
             {
@@ -483,7 +661,7 @@ namespace WatchIt
                 {
                     buttonIndex++;
 
-                    _limitsButton = UIUtils.CreateButton(_panel, "Limits", _textureAtlas, "Circle");
+                    _limitsButton = UIUtils.CreateButton(_panel, "Limits", _watchItAtlas, "Circle");
                     _limitsButton.tooltip = "Game Limits";
                     _limitsButton.size = new Vector2(33f, 33f);
 
@@ -494,7 +672,7 @@ namespace WatchIt
                     else
                     {
                         _limitsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(1.5f, 36f * buttonIndex + 36f) : new Vector3(36f * buttonIndex + 36f, 1.5f);
-                    }                    
+                    }
 
                     _limitsButton.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
                     _limitsButton.normalFgSprite = "Limits";
@@ -524,7 +702,7 @@ namespace WatchIt
                 {
                     buttonIndex++;
 
-                    _statisticsButton = UIUtils.CreateButton(_panel, "Statistics", _textureAtlas, "Circle");
+                    _statisticsButton = UIUtils.CreateButton(_panel, "Statistics", _watchItAtlas, "Circle");
                     _statisticsButton.tooltip = "City Statistics";
                     _statisticsButton.size = new Vector2(33f, 33f);
 
@@ -535,7 +713,7 @@ namespace WatchIt
                     else
                     {
                         _statisticsButton.relativePosition = ModConfig.Instance.VerticalLayout ? new Vector3(1.5f, 36f * buttonIndex + 36f) : new Vector3(36f * buttonIndex + 36f, 1.5f);
-                    }                    
+                    }
 
                     _statisticsButton.foregroundSpriteMode = UIForegroundSpriteMode.Stretch;
                     _statisticsButton.normalFgSprite = "Statistics";
@@ -560,7 +738,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:CreateOrUpdatePanelButtons -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:CreateOrUpdatePanelButtons -> Exception: " + e.Message);
             }
         }
 
@@ -570,11 +748,11 @@ namespace WatchIt
 
             try
             {
-                watch.CreateWatch(_panel, name, type, _watches.Count, _textureAtlas, spriteName, toolTip);
+                watch.CreateWatch(_panel, name, type, _watches.Count, _watchItAtlas, spriteName, toolTip);
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:CreateWatch -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:CreateWatch -> Exception: " + e.Message);
             }
 
             return watch;
@@ -591,7 +769,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watcher:UpdateWatches -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WatchManager:UpdateWatches -> Exception: " + e.Message);
             }
         }
     }

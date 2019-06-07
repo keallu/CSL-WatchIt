@@ -4,16 +4,22 @@
     public class ModConfig
     {
         public bool ConfigUpdated { get; set; }
-        public bool ShowOnOffButton { get; set; } = true;
-        public bool ShowDragIcon { get; set; } = true;
-        public float OnOffButtonPositionX { get; set; }
-        public float OnOffButtonPositionY { get; set; }
-        public bool Visible { get; set; } = true;
+
+        public bool ShowWarningPanel { get; set; } = true;
+        public float WarningPositionX { get; set; }
+        public float WarningPositionY { get; set; }
+        public bool WarningKeyMappingEnabled { get; set; } = true;
+        public bool WarningBuildings { get; set; } = true;
+        public bool WarningNetworks { get; set; } = false;
+        public int WarningThreshold { get; set; } = 0;
+        public bool ShowPanel { get; set; } = true;
         public float PositionX { get; set; }
         public float PositionY { get; set; }
+        public bool KeyMappingEnabled { get; set; } = true;
         public bool VerticalLayout { get; set; } = true;
         public bool DoubleRibbonLayout { get; set; } = true;
         public float RefreshInterval { get; set; } = 5.0f;
+        public bool ShowDragIcon { get; set; } = true;
         public int ShowNumericalDigits { get; set; } = 1;
         public int NumericalDigitsAnchor { get; set; } = 1;
         public float Opacity { get; set; } = 1.0f;

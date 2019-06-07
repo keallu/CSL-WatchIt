@@ -44,21 +44,62 @@ namespace WatchIt
             bool selected;
             int selectedIndex;
             float selectedValue;
-            float result;
 
             group = helper.AddGroup(Name);
 
-            selected = ModConfig.Instance.ShowOnOffButton;
-            group.AddCheckbox("Show On/Off Button", selected, sel =>
+            selectedValue = ModConfig.Instance.RefreshInterval;
+            group.AddTextfield("Refresh Interval (in seconds)", selectedValue.ToString(), sel =>
             {
-                ModConfig.Instance.ShowOnOffButton = sel;
+                float.TryParse(sel, out float result);
+                ModConfig.Instance.RefreshInterval = result;
                 ModConfig.Instance.Save();
             });
 
-            selected = ModConfig.Instance.ShowDragIcon;
-            group.AddCheckbox("Show Drag Icon", selected, sel =>
+            group.AddSpace(10);
+
+            group.AddButton("Reset Positioning of Panels", () =>
             {
-                ModConfig.Instance.ShowDragIcon = sel;
+                WatchProperties.Instance.ResetWarningPanelPosition();
+                WatchProperties.Instance.ResetPanelPosition();
+            });
+
+            group = helper.AddGroup("Warning Panel");
+
+            selected = ModConfig.Instance.WarningKeyMappingEnabled;
+            group.AddCheckbox("On/Off Keymapping Enabled (LEFT CTRL + W)", selected, sel =>
+            {
+                ModConfig.Instance.WarningKeyMappingEnabled = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.WarningBuildings;
+            group.AddCheckbox("Include Warnings for Buildings", selected, sel =>
+            {
+                ModConfig.Instance.WarningBuildings = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.WarningNetworks;
+            group.AddCheckbox("Include Warnings for Networks", selected, sel =>
+            {
+                ModConfig.Instance.WarningNetworks = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selectedValue = ModConfig.Instance.WarningThreshold;
+            group.AddTextfield("Threshold", selectedValue.ToString(), sel =>
+            {
+                int.TryParse(sel, out int result);
+                ModConfig.Instance.WarningThreshold = result;
+                ModConfig.Instance.Save();
+            });
+
+            group = helper.AddGroup("Watch Panel");
+
+            selected = ModConfig.Instance.KeyMappingEnabled;
+            group.AddCheckbox("On/Off Keymapping Enabled (LEFT ALT + W)", selected, sel =>
+            {
+                ModConfig.Instance.KeyMappingEnabled = sel;
                 ModConfig.Instance.Save();
             });
 
@@ -76,11 +117,10 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
-            selectedValue = ModConfig.Instance.RefreshInterval;
-            group.AddTextfield("Refresh Interval (in seconds)", selectedValue.ToString(), sel =>
+            selected = ModConfig.Instance.ShowDragIcon;
+            group.AddCheckbox("Show Drag Icon", selected, sel =>
             {
-                float.TryParse(sel, out result);
-                ModConfig.Instance.RefreshInterval = result;
+                ModConfig.Instance.ShowDragIcon = sel;
                 ModConfig.Instance.Save();
             });
 
@@ -112,15 +152,7 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
-            group.AddSpace(10);
-
-            group.AddButton("Reset Positioning of Button and Panel", () =>
-            {
-                WatchManager.Instance.ResetOnOffButtonPosition();
-                WatchManager.Instance.ResetPosition();
-            });
-
-            group = helper.AddGroup("Watchers");
+            group = helper.AddGroup("Watches");
 
             selected = ModConfig.Instance.ElectricityAvailability;
             group.AddCheckbox("Electricity Availability", selected, sel =>

@@ -9,8 +9,8 @@ namespace WatchIt
     public class Loading : LoadingExtensionBase
     {
         private LoadMode _loadMode;
-        private GameObject _gameObject1;
-        private GameObject _gameObject2;
+        private GameObject _watchManagerGameObject;
+        private GameObject _limitsPanelGameObject;
 
         public override void OnLevelLoaded(LoadMode mode)
         {
@@ -23,16 +23,15 @@ namespace WatchIt
                     return;
                 }
 
-                UIView objectOfType = UnityEngine.Object.FindObjectOfType<UIView>();
-                if (objectOfType != null)
-                {
-                    _gameObject1 = new GameObject("WatchItWatcher");
-                    _gameObject1.transform.parent = objectOfType.transform;
-                    _gameObject1.AddComponent<Watcher>();
+                _watchManagerGameObject = new GameObject("WatchItZoomManager");
+                _watchManagerGameObject.AddComponent<WatchManager>();
 
-                    _gameObject2 = new GameObject("WatchItLimitsPanel");
-                    _gameObject2.transform.parent = objectOfType.transform;
-                    _gameObject2.AddComponent<LimitsPanel>();
+                UIView uiView = UnityEngine.Object.FindObjectOfType<UIView>();
+                if (uiView != null)
+                {
+                    _limitsPanelGameObject = new GameObject("WatchItLimitsPanel");
+                    _limitsPanelGameObject.transform.parent = uiView.transform;
+                    _limitsPanelGameObject.AddComponent<LimitsPanel>();
                 }
             }
             catch (Exception e)
@@ -50,14 +49,14 @@ namespace WatchIt
                     return;
                 }
 
-                if (_gameObject1 != null)
+                if (_watchManagerGameObject != null)
                 {
-                    UnityEngine.Object.Destroy(_gameObject1);
+                    UnityEngine.Object.Destroy(_watchManagerGameObject);
                 }
 
-                if (_gameObject2 != null)
+                if (_limitsPanelGameObject != null)
                 {
-                    UnityEngine.Object.Destroy(_gameObject2);
+                    UnityEngine.Object.Destroy(_limitsPanelGameObject);
                 }
             }
             catch (Exception e)

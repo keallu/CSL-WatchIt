@@ -57,14 +57,17 @@
     <Compile Include="Limit.cs" />
     <Compile Include="LimitsPanel.cs" />
     <Compile Include="Loading.cs" />
-    <Compile Include="Managers\WatchManager.cs" />
+    <Compile Include="TextUtils.cs" />
+    <Compile Include="Warning.cs" />
+    <Compile Include="WatchProperties.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="UIUtils.cs" />
     <Compile Include="Watch.cs" />
-    <Compile Include="Watcher.cs" />
+    <Compile Include="WatchManager.cs" />
+    <Compile Include="WatchUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Crematorium.png" />
