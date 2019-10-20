@@ -19,7 +19,7 @@ namespace WatchIt
         private UILabel _headerComsumption;
         private UILabel _lastUpdated;
 
-        private List<Limit> _limits;
+        private List<LimitItem> _limitItems;
 
         public override void Awake()
         {
@@ -68,9 +68,9 @@ namespace WatchIt
         {
             base.OnDestroy();
 
-            foreach (Limit limit in _limits)
+            foreach (LimitItem limitItem in _limitItems)
             {
-                limit.DestroyLimit();
+                limitItem.DestroyLimitItem();
             }
 
             if (_title != null)
@@ -172,8 +172,8 @@ namespace WatchIt
                 _lastUpdated.verticalAlignment = UIVerticalAlignment.Middle;
                 _lastUpdated.relativePosition = new Vector3(30f, height - 38f);
 
-                CreateLimits();
-                UpdateLimits();
+                CreateLimitItems();
+                UpdateLimitItems();
             }
             catch (Exception e)
             {
@@ -185,7 +185,7 @@ namespace WatchIt
         {
             try
             {
-                UpdateLimits();
+                UpdateLimitItems();
             }
             catch (Exception e)
             {
@@ -193,73 +193,73 @@ namespace WatchIt
             }
         }
 
-        private void CreateLimits()
+        private void CreateLimitItems()
         {
             try
             {
-                if (_limits == null)
+                if (_limitItems == null)
                 {
-                    _limits = new List<Limit>();
+                    _limitItems = new List<LimitItem>();
                 }
 
-                _limits.Add(CreateLimit("Areas"));
-                _limits.Add(CreateLimit("Buildings"));
-                _limits.Add(CreateLimit("Citizens"));
-                _limits.Add(CreateLimit("Citizen Units"));
-                _limits.Add(CreateLimit("Citizen Instances"));
-                _limits.Add(CreateLimit("Disasters"));
-                _limits.Add(CreateLimit("Districts"));
-                _limits.Add(CreateLimit("Events"));
-                _limits.Add(CreateLimit("Loans"));
-                _limits.Add(CreateLimit("Net Segments"));
-                _limits.Add(CreateLimit("Net Nodes"));
-                _limits.Add(CreateLimit("Net Lanes"));                
-                _limits.Add(CreateLimit("Path Units"));
-                _limits.Add(CreateLimit("Props"));
-                _limits.Add(CreateLimit("Radio Channels"));
-                _limits.Add(CreateLimit("Radio Contents"));
-                _limits.Add(CreateLimit("Transport Lines"));
-                _limits.Add(CreateLimit("Trees"));
-                _limits.Add(CreateLimit("Vehicles"));
-                _limits.Add(CreateLimit("Vehicles Parked"));
-                _limits.Add(CreateLimit("Zoned Blocks"));
+                _limitItems.Add(CreateLimitItem("Areas"));
+                _limitItems.Add(CreateLimitItem("Buildings"));
+                _limitItems.Add(CreateLimitItem("Citizens"));
+                _limitItems.Add(CreateLimitItem("Citizen Units"));
+                _limitItems.Add(CreateLimitItem("Citizen Instances"));
+                _limitItems.Add(CreateLimitItem("Disasters"));
+                _limitItems.Add(CreateLimitItem("Districts"));
+                _limitItems.Add(CreateLimitItem("Events"));
+                _limitItems.Add(CreateLimitItem("Loans"));
+                _limitItems.Add(CreateLimitItem("Net Segments"));
+                _limitItems.Add(CreateLimitItem("Net Nodes"));
+                _limitItems.Add(CreateLimitItem("Net Lanes"));                
+                _limitItems.Add(CreateLimitItem("Path Units"));
+                _limitItems.Add(CreateLimitItem("Props"));
+                _limitItems.Add(CreateLimitItem("Radio Channels"));
+                _limitItems.Add(CreateLimitItem("Radio Contents"));
+                _limitItems.Add(CreateLimitItem("Transport Lines"));
+                _limitItems.Add(CreateLimitItem("Trees"));
+                _limitItems.Add(CreateLimitItem("Vehicles"));
+                _limitItems.Add(CreateLimitItem("Vehicles Parked"));
+                _limitItems.Add(CreateLimitItem("Zoned Blocks"));
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:CreateLimits -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitsPanel:CreateLimitItems -> Exception: " + e.Message);
             }
         }
 
-        private Limit CreateLimit(string name)
+        private LimitItem CreateLimitItem(string name)
         {
-            Limit limit = new Limit();
+            LimitItem limitItem = new LimitItem();
 
             try
             {
-                limit.CreateLimit(this, name, _limits.Count);
+                limitItem.CreateLimitItem(this, name, _limitItems.Count);
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:CreateLimit -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitsPanel:CreateLimitItem -> Exception: " + e.Message);
             }
 
-            return limit;
+            return limitItem;
         }
 
-        private void UpdateLimits()
+        private void UpdateLimitItems()
         {
             try
             {
-                foreach (Limit limit in _limits)
+                foreach (LimitItem limit in _limitItems)
                 {
-                    limit.UpdateLimit();
+                    limit.UpdateLimitItem();
                 }
 
                 _lastUpdated.text = "Updated at " + DateTime.Now.ToLongTimeString();
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:UpdateLimits -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitsPanel:UpdateLimitItems -> Exception: " + e.Message);
             }
         }
     }

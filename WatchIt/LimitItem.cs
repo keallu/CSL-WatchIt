@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace WatchIt
 {
-    public class Limit
+    public class LimitItem
     {
         public string Name { get; set; }
 
@@ -17,7 +17,7 @@ namespace WatchIt
         private UILabel _consumption;
         private UISprite _modded;
 
-        public void CreateLimit(UIComponent parent, string name, int index)
+        public void CreateLimitItem(UIComponent parent, string name, int index)
         {
             try
             {
@@ -87,11 +87,11 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Limit:CreateLimit -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitItem:CreateLimitItem -> Exception: " + e.Message);
             }
         }
 
-        public void UpdateLimit()
+        public void UpdateLimitItem()
         {
             try
             {
@@ -104,11 +104,11 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Limit:UpdateLimit -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitItem:UpdateLimitItem -> Exception: " + e.Message);
             }
         }
 
-        public void DestroyLimit()
+        public void DestroyLimitItem()
         {
             try
             {
@@ -139,7 +139,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Limit:DestroyLimit -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitItem:DestroyLimitItem -> Exception: " + e.Message);
             }
         }
 

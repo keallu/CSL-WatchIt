@@ -3,20 +3,20 @@ using UnityEngine;
 
 namespace WatchIt
 {
-    public class WatchProperties
+    public class ModProperties
     {
         public float WarningPanelDefaultPositionX;
         public float WarningPanelDefaultPositionY;
         public float PanelDefaultPositionX;
         public float PanelDefaultPositionY;
 
-        private static WatchProperties instance;
+        private static ModProperties instance;
 
-        public static WatchProperties Instance
+        public static ModProperties Instance
         {
             get
             {
-                return instance ?? (instance = new WatchProperties());
+                return instance ?? (instance = new ModProperties());
             }
         }
 
@@ -30,7 +30,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Hide It!] WatchProperties:ResetWarningPanelPosition -> Exception: " + e.Message);
+                Debug.Log("[Hide It!] ModProperties:ResetWarningPanelPosition -> Exception: " + e.Message);
             }
         }
 
@@ -44,7 +44,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Hide It!] WatchProperties:ResetPanelPosition -> Exception: " + e.Message);
+                Debug.Log("[Hide It!] ModProperties:ResetPanelPosition -> Exception: " + e.Message);
             }
         }
     }

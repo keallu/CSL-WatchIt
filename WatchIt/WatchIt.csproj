@@ -54,20 +54,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
-    <Compile Include="Limit.cs" />
+    <Compile Include="LimitItem.cs" />
     <Compile Include="LimitsPanel.cs" />
     <Compile Include="Loading.cs" />
     <Compile Include="TextUtils.cs" />
     <Compile Include="Warning.cs" />
-    <Compile Include="WatchProperties.cs" />
+    <Compile Include="ModProperties.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="UIUtils.cs" />
+    <Compile Include="WarningItem.cs" />
+    <Compile Include="WarningsPanel.cs" />
     <Compile Include="Watch.cs" />
-    <Compile Include="WatchManager.cs" />
-    <Compile Include="WatchUtils.cs" />
+    <Compile Include="ModManager.cs" />
+    <Compile Include="WarningUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Crematorium.png" />

@@ -9,7 +9,8 @@ namespace WatchIt
     public class Loading : LoadingExtensionBase
     {
         private LoadMode _loadMode;
-        private GameObject _watchManagerGameObject;
+        private GameObject _modManagerGameObject;
+        private GameObject _warningsPanelGameObject;
         private GameObject _limitsPanelGameObject;
 
         public override void OnLevelLoaded(LoadMode mode)
@@ -23,12 +24,16 @@ namespace WatchIt
                     return;
                 }
 
-                _watchManagerGameObject = new GameObject("WatchItZoomManager");
-                _watchManagerGameObject.AddComponent<WatchManager>();
+                _modManagerGameObject = new GameObject("WatchItModManager");
+                _modManagerGameObject.AddComponent<ModManager>();
 
                 UIView uiView = UnityEngine.Object.FindObjectOfType<UIView>();
                 if (uiView != null)
                 {
+                    _warningsPanelGameObject = new GameObject("WatchItWarningsPanel");
+                    _warningsPanelGameObject.transform.parent = uiView.transform;
+                    _warningsPanelGameObject.AddComponent<WarningsPanel>();
+
                     _limitsPanelGameObject = new GameObject("WatchItLimitsPanel");
                     _limitsPanelGameObject.transform.parent = uiView.transform;
                     _limitsPanelGameObject.AddComponent<LimitsPanel>();
@@ -49,9 +54,9 @@ namespace WatchIt
                     return;
                 }
 
-                if (_watchManagerGameObject != null)
+                if (_modManagerGameObject != null)
                 {
-                    UnityEngine.Object.Destroy(_watchManagerGameObject);
+                    UnityEngine.Object.Destroy(_modManagerGameObject);
                 }
 
                 if (_limitsPanelGameObject != null)

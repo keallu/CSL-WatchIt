@@ -59,8 +59,8 @@ namespace WatchIt
 
             group.AddButton("Reset Positioning of Panels", () =>
             {
-                WatchProperties.Instance.ResetWarningPanelPosition();
-                WatchProperties.Instance.ResetPanelPosition();
+                ModProperties.Instance.ResetWarningPanelPosition();
+                ModProperties.Instance.ResetPanelPosition();
             });
 
             group = helper.AddGroup("Warning Panel");

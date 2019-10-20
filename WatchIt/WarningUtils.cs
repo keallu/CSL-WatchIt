@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace WatchIt
 {
-    public static class WatchUtils
+    public static class WarningUtils
     {
         public static List<Warning> GetWarnings(bool buildings, bool networks, int threshold)
         {
@@ -49,7 +49,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] WatchUtils:GetWarnings -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] WarningUtils:GetWarnings -> Exception: " + e.Message);
                 return null;
             }
         }
@@ -121,8 +121,10 @@ namespace WatchIt
                 {
                     warning = new Warning
                     {
-                        Problem = problem
-                    };
+                        Problem = problem,
+                        Name = TextUtils.AddSpacesBeforeCapitalLetters(Utils.GetNameByValue(problem, "Text")),
+                        SpriteName = Utils.GetNameByValue(problem, "Normal")
+                };
 
                     warnings.Add(warning);
                 }
