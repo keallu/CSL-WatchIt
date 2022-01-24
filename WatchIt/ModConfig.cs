@@ -4,18 +4,9 @@
     public class ModConfig
     {
         public bool ConfigUpdated { get; set; }
-
-        public bool ShowWarningPanel { get; set; } = true;
-        public float WarningPositionX { get; set; }
-        public float WarningPositionY { get; set; }
-        public bool WarningKeyMappingEnabled { get; set; } = true;
-        public bool WarningBuildings { get; set; } = true;
-        public bool WarningNetworks { get; set; } = false;
-        public int WarningThreshold { get; set; } = 0;
         public bool ShowPanel { get; set; } = true;
         public float PositionX { get; set; }
         public float PositionY { get; set; }
-        public bool KeyMappingEnabled { get; set; } = true;
         public bool VerticalLayout { get; set; } = true;
         public bool DoubleRibbonLayout { get; set; } = true;
         public float RefreshInterval { get; set; } = 5.0f;
@@ -50,8 +41,20 @@
         public bool HealthAverage { get; set; } = true;
         public bool CityAttractiveness { get; set; } = true;
         public bool Happiness { get; set; } = true;
-        public bool ShowGameLimitsButton { get; set; } = true;
-        public bool ShowCityStatisticsButton { get; set; } = true;
+        public bool ShowLimitsButton { get; set; } = true;
+        public bool ShowProblemsButton { get; set; } = true;
+        public bool ShowStatisticsButton { get; set; } = true;
+        public bool LimitAutoRefresh { get; set; } = true;
+        public bool ShowWarningPanel { get; set; } = true;
+        public float WarningPositionX { get; set; }
+        public float WarningPositionY { get; set; }
+        public bool WarningAutoOpenClose { get; set; } = true;
+        public bool WarningIncludeProblemsForBuildings { get; set; } = true;
+        public bool WarningIncludeProblemsForNetworks { get; set; } = true;
+        public int WarningMaxItems { get; set; } = 3;
+        public bool ProblemAutoRefresh { get; set; } = false;
+        public bool ProblemAutoClose { get; set; } = true;
+        public int ProblemMaxItems { get; set; } = 100;
 
         private static ModConfig instance;
 

@@ -3,38 +3,42 @@ using ColossalFramework.UI;
 using System;
 using UnityEngine;
 
-namespace WatchIt
+namespace WatchIt.Panels
 {
-    public class Watch
+    public class GaugeItem
     {
         public string Name { get; set; }
-        public WatchType Type { get; set; }
-
-        public enum WatchType { Unset, Aspect, Pillar };
+        public GaugeType Type { get; set; }
+        public enum GaugeType { Unset, Aspect, Pillar };
 
         private UIButton _button;
         private UISprite _sprite;
         private UILabel _label;
 
-        public void CreateWatch(UIComponent parent, string name, WatchType type, int index, UITextureAtlas atlas, string spriteName, string toolTip)
+        public void CreateGaugeItem(UIComponent parent, string name, GaugeType type, int index, UITextureAtlas atlas, string spriteName, string toolTip)
         {
             try
             {
                 Name = name;
                 Type = type;
 
-                if (Type == WatchType.Aspect)
+                if (Type == GaugeType.Aspect)
                 {
                     CreateAsAspect(parent, ModConfig.Instance.VerticalLayout, ModConfig.Instance.DoubleRibbonLayout, index, atlas, spriteName, toolTip);
                 }
-                else if (Type == WatchType.Pillar)
+                else if (Type == GaugeType.Pillar)
                 {
                     CreateAsPillar(parent, ModConfig.Instance.VerticalLayout, ModConfig.Instance.DoubleRibbonLayout, index, atlas, spriteName, toolTip);
                 }
 
-                _button.eventClick += (component, eventParam) =>
+                _button.eventClicked += (component, eventParam) =>
                 {
-                    SetInfoMode(name);
+                    if (!eventParam.used)
+                    {
+                        SetInfoMode(name);
+
+                        eventParam.Use();
+                    }
                 };
 
                 if (ModConfig.Instance.ShowNumericalDigits == 2 || ModConfig.Instance.ShowNumericalDigits == 3)
@@ -58,7 +62,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watch:CreateWatch -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] GaugeItem:CreateGaugeItem -> Exception: " + e.Message);
             }
         }
 
@@ -84,14 +88,14 @@ namespace WatchIt
                 _button.hoveredFgSprite = spriteName;
                 _button.pressedFgSprite = spriteName;
 
-                _sprite = UIUtils.CreateSprite(_button, Name, atlas, "WatchRed");
+                _sprite = UIUtils.CreateSprite(_button, Name, atlas, "GaugeRed");
                 _sprite.isInteractive = false;
                 _sprite.size = new Vector2(36f, 36f);
                 _sprite.relativePosition = new Vector3(-1.5f, -1.5f);
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watch:CreateAsAspect -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] GaugeItem:CreateAsAspect -> Exception: " + e.Message);
             }
         }
 
@@ -128,7 +132,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watch:CreateAsPillar -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] GaugeItem:CreateAsPillar -> Exception: " + e.Message);
             }
         }
 
@@ -187,7 +191,32 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watch:CreateNumericalDigits -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] GaugeItem:CreateNumericalDigits -> Exception: " + e.Message);
+            }
+        }
+
+        public void DestroyGaugeItem()
+        {
+            try
+            {
+                if (_sprite != null)
+                {
+                    UnityEngine.Object.Destroy(_sprite.gameObject);
+                }
+
+                if (_button != null)
+                {
+                    UnityEngine.Object.Destroy(_button.gameObject);
+                }
+
+                if (_label != null)
+                {
+                    UnityEngine.Object.Destroy(_label.gameObject);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] GaugeItem:DestroyGaugeItem -> Exception: " + e.Message);
             }
         }
 
@@ -216,21 +245,21 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watch:SetInfoMode -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] GaugeItem:SetInfoMode -> Exception: " + e.Message);
             }
         }
 
-        public void UpdateWatch()
+        public void UpdateGaugeItem()
         {
             try
             {
                 int percentage = GetPercentage(Name);
 
-                if (Type == WatchType.Aspect)
+                if (Type == GaugeType.Aspect)
                 {
                     _sprite.spriteName = GetAspectSpriteName(percentage);
                 }
-                else if (Type == WatchType.Pillar)
+                else if (Type == GaugeType.Pillar)
                 {
                     _sprite.fillAmount = percentage / 100f;
                 }
@@ -242,32 +271,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] Watch:UpdateWatch -> Exception: " + e.Message);
-            }
-        }
-
-        public void DestroyWatch()
-        {
-            try
-            {
-                if (_sprite != null)
-                {
-                    UnityEngine.Object.Destroy(_sprite);
-                }
-
-                if (_button != null)
-                {
-                    UnityEngine.Object.Destroy(_button);
-                }
-
-                if (_label != null)
-                {
-                    UnityEngine.Object.Destroy(_label);
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Log("[Watch It!] Watch:DestroyWatch -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] GaugeItem:UpdateGaugeItem -> Exception: " + e.Message);
             }
         }
 
@@ -583,15 +587,15 @@ namespace WatchIt
         {
             if (percentage > 55)
             {
-                return "WatchGreen";
+                return "GaugeGreen";
             }
             else if (percentage > 45)
             {
-                return "WatchYellow";
+                return "GaugeYellow";
             }
             else
             {
-                return "WatchRed";
+                return "GaugeRed";
             }
         }
     }

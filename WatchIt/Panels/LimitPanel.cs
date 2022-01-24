@@ -3,12 +3,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WatchIt
+namespace WatchIt.Panels
 {
-    public class LimitsPanel : UIPanel
+    public class LimitPanel : UIPanel
     {
+        private bool _initialized;
         private float _timer;
-        
+
         private UILabel _title;
         private UIButton _close;
         private UIDragHandle _dragHandle;
@@ -27,17 +28,26 @@ namespace WatchIt
 
             try
             {
-                CreateUI();
+
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:Awake -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitPanel:Awake -> Exception: " + e.Message);
             }
         }
 
         public override void Start()
         {
             base.Start();
+
+            try
+            {
+                CreateUI();
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] LimitPanel:Start -> Exception: " + e.Message);
+            }
         }
 
         public override void Update()
@@ -46,21 +56,28 @@ namespace WatchIt
 
             try
             {
-                if (isVisible)
+                if (!_initialized)
                 {
-                    _timer += Time.deltaTime;
+                    UpdateUI();
 
-                    if (_timer > ModConfig.Instance.RefreshInterval)
+                    _initialized = true;
+                }
+
+                _timer += Time.deltaTime;
+
+                if (_timer > ModConfig.Instance.RefreshInterval)
+                {
+                    _timer -= ModConfig.Instance.RefreshInterval;
+
+                    if (isVisible && ModConfig.Instance.LimitAutoRefresh)
                     {
-                        _timer -= ModConfig.Instance.RefreshInterval;
-
-                        UpdateUI();
+                        RefreshLimits();
                     }
                 }
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:Update -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitPanel:Update -> Exception: " + e.Message);
             }
         }
 
@@ -68,46 +85,53 @@ namespace WatchIt
         {
             base.OnDestroy();
 
-            foreach (LimitItem limitItem in _limitItems)
+            try
             {
-                limitItem.DestroyLimitItem();
-            }
+                foreach (LimitItem limitItem in _limitItems)
+                {
+                    limitItem.DestroyLimitItem();
+                }
 
-            if (_title != null)
-            {
-                Destroy(_title);
+                if (_title != null)
+                {
+                    Destroy(_title.gameObject);
+                }
+                if (_close != null)
+                {
+                    Destroy(_close.gameObject);
+                }
+                if (_dragHandle != null)
+                {
+                    Destroy(_dragHandle.gameObject);
+                }
+                if (_header != null)
+                {
+                    Destroy(_header.gameObject);
+                }
+                if (_headerName != null)
+                {
+                    Destroy(_headerName.gameObject);
+                }
+                if (_headerAmount != null)
+                {
+                    Destroy(_headerAmount.gameObject);
+                }
+                if (_headerCapacity != null)
+                {
+                    Destroy(_headerCapacity.gameObject);
+                }
+                if (_headerComsumption != null)
+                {
+                    Destroy(_headerComsumption.gameObject);
+                }
+                if (_lastUpdated != null)
+                {
+                    Destroy(_lastUpdated.gameObject);
+                }
             }
-            if (_close != null)
+            catch (Exception e)
             {
-                Destroy(_close);
-            }
-            if (_dragHandle != null)
-            {
-                Destroy(_dragHandle);
-            }
-            if (_header != null)
-            {
-                Destroy(_header);
-            }
-            if (_headerName != null)
-            {
-                Destroy(_headerName);
-            }
-            if (_headerAmount != null)
-            {
-                Destroy(_headerAmount);
-            }
-            if (_headerCapacity != null)
-            {
-                Destroy(_headerCapacity);
-            }
-            if (_headerComsumption != null)
-            {
-                Destroy(_headerComsumption);
-            }
-            if (_lastUpdated != null)
-            {
-                Destroy(_lastUpdated);
+                Debug.Log("[Watch It!] LimitPanel:OnDestroy -> Exception: " + e.Message);
             }
         }
 
@@ -115,7 +139,6 @@ namespace WatchIt
         {
             try
             {
-                name = "WatchItLimitsPanel";
                 backgroundSprite = "MenuPanel2";
                 isVisible = false;
                 canFocus = true;
@@ -124,7 +147,7 @@ namespace WatchIt
                 height = 650f;
                 relativePosition = new Vector3(Mathf.Floor((GetUIView().fixedWidth - width) / 2f), Mathf.Floor((GetUIView().fixedHeight - height) / 2f));
 
-                _title = UIUtils.CreateMenuPanelTitle(this, "Game Limits - Overview");
+                _title = UIUtils.CreateMenuPanelTitle(this, "Limits - Overview");
                 _close = UIUtils.CreateMenuPanelCloseButton(this);
                 _dragHandle = UIUtils.CreateMenuPanelDragHandle(this);
 
@@ -172,28 +195,32 @@ namespace WatchIt
                 _lastUpdated.verticalAlignment = UIVerticalAlignment.Middle;
                 _lastUpdated.relativePosition = new Vector3(30f, height - 38f);
 
-                CreateLimitItems();
-                UpdateLimitItems();
+                CreateLimits();
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:CreateUI -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitPanel:CreateUI -> Exception: " + e.Message);
             }
+        }
+        public void ForceUpdateUI()
+        {
+            UpdateUI();
         }
 
         private void UpdateUI()
         {
             try
             {
-                UpdateLimitItems();
+                UpdateLimits();
+                RefreshLimits();
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:UpdateUI -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitPanel:UpdateUI -> Exception: " + e.Message);
             }
         }
 
-        private void CreateLimitItems()
+        private void CreateLimits()
         {
             try
             {
@@ -202,35 +229,47 @@ namespace WatchIt
                     _limitItems = new List<LimitItem>();
                 }
 
-                _limitItems.Add(CreateLimitItem("Areas"));
-                _limitItems.Add(CreateLimitItem("Buildings"));
-                _limitItems.Add(CreateLimitItem("Citizens"));
-                _limitItems.Add(CreateLimitItem("Citizen Units"));
-                _limitItems.Add(CreateLimitItem("Citizen Instances"));
-                _limitItems.Add(CreateLimitItem("Disasters"));
-                _limitItems.Add(CreateLimitItem("Districts"));
-                _limitItems.Add(CreateLimitItem("Events"));
-                _limitItems.Add(CreateLimitItem("Loans"));
-                _limitItems.Add(CreateLimitItem("Net Segments"));
-                _limitItems.Add(CreateLimitItem("Net Nodes"));
-                _limitItems.Add(CreateLimitItem("Net Lanes"));                
-                _limitItems.Add(CreateLimitItem("Path Units"));
-                _limitItems.Add(CreateLimitItem("Props"));
-                _limitItems.Add(CreateLimitItem("Radio Channels"));
-                _limitItems.Add(CreateLimitItem("Radio Contents"));
-                _limitItems.Add(CreateLimitItem("Transport Lines"));
-                _limitItems.Add(CreateLimitItem("Trees"));
-                _limitItems.Add(CreateLimitItem("Vehicles"));
-                _limitItems.Add(CreateLimitItem("Vehicles Parked"));
-                _limitItems.Add(CreateLimitItem("Zoned Blocks"));
+                _limitItems.Add(CreateLimit("Areas"));
+                _limitItems.Add(CreateLimit("Buildings"));
+                _limitItems.Add(CreateLimit("Citizens"));
+                _limitItems.Add(CreateLimit("Citizen Units"));
+                _limitItems.Add(CreateLimit("Citizen Instances"));
+                _limitItems.Add(CreateLimit("Disasters"));
+                _limitItems.Add(CreateLimit("Districts"));
+                _limitItems.Add(CreateLimit("Events"));
+                _limitItems.Add(CreateLimit("Loans"));
+                _limitItems.Add(CreateLimit("Net Segments"));
+                _limitItems.Add(CreateLimit("Net Nodes"));
+                _limitItems.Add(CreateLimit("Net Lanes"));
+                _limitItems.Add(CreateLimit("Path Units"));
+                _limitItems.Add(CreateLimit("Props"));
+                _limitItems.Add(CreateLimit("Radio Channels"));
+                _limitItems.Add(CreateLimit("Radio Contents"));
+                _limitItems.Add(CreateLimit("Transport Lines"));
+                _limitItems.Add(CreateLimit("Trees"));
+                _limitItems.Add(CreateLimit("Vehicles"));
+                _limitItems.Add(CreateLimit("Vehicles Parked"));
+                _limitItems.Add(CreateLimit("Zoned Blocks"));
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:CreateLimitItems -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitPanel:CreateLimits -> Exception: " + e.Message);
             }
         }
 
-        private LimitItem CreateLimitItem(string name)
+        private void UpdateLimits()
+        {
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] LimitPanel:UpdateLimits -> Exception: " + e.Message);
+            }
+        }
+
+        private LimitItem CreateLimit(string name)
         {
             LimitItem limitItem = new LimitItem();
 
@@ -240,13 +279,13 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:CreateLimitItem -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitPanel:CreateLimit -> Exception: " + e.Message);
             }
 
             return limitItem;
         }
 
-        private void UpdateLimitItems()
+        private void RefreshLimits()
         {
             try
             {
@@ -259,7 +298,7 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Watch It!] LimitsPanel:UpdateLimitItems -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] LimitPanel:UpdateLimits -> Exception: " + e.Message);
             }
         }
     }

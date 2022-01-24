@@ -5,7 +5,7 @@ using System.Globalization;
 using UnityEngine;
 using EManagersLib.API;
 
-namespace WatchIt
+namespace WatchIt.Panels
 {
     public class LimitItem
     {
@@ -80,15 +80,51 @@ namespace WatchIt
                 _consumption.width = 150f;
                 _consumption.relativePosition = new Vector3(485f, 2f);
 
-                _modded = UIUtils.CreateSprite(_consumption, "LimitModded", "IconWarning");
+                _modded = UIUtils.CreateSprite(_consumption, "LimitModded", "CityInfo");
                 _modded.tooltip = "This capacity has been modded";
                 _modded.opacity = 1f;
-                _modded.size = new Vector2(23f, 23f);
-                _modded.relativePosition = new Vector3(-10f, 0f);
+                _modded.height = 20f;
+                _modded.width = 20f;
+                _modded.relativePosition = new Vector3(0f, 0f);
             }
             catch (Exception e)
             {
                 Debug.Log("[Watch It!] LimitItem:CreateLimitItem -> Exception: " + e.Message);
+            }
+        }
+
+        public void DestroyLimitItem()
+        {
+            try
+            {
+                if (_name != null)
+                {
+                    UnityEngine.Object.Destroy(_name.gameObject);
+                }
+                if (_amount != null)
+                {
+                    UnityEngine.Object.Destroy(_amount.gameObject);
+                }
+                if (_capacity != null)
+                {
+                    UnityEngine.Object.Destroy(_capacity.gameObject);
+                }
+                if (_consumption != null)
+                {
+                    UnityEngine.Object.Destroy(_consumption.gameObject);
+                }
+                if (_modded != null)
+                {
+                    UnityEngine.Object.Destroy(_modded.gameObject);
+                }
+                if (_panel != null)
+                {
+                    UnityEngine.Object.Destroy(_panel.gameObject);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] LimitItem:DestroyLimitItem -> Exception: " + e.Message);
             }
         }
 
@@ -106,41 +142,6 @@ namespace WatchIt
             catch (Exception e)
             {
                 Debug.Log("[Watch It!] LimitItem:UpdateLimitItem -> Exception: " + e.Message);
-            }
-        }
-
-        public void DestroyLimitItem()
-        {
-            try
-            {
-                if (_name != null)
-                {
-                    UnityEngine.Object.Destroy(_name);
-                }
-                if (_amount != null)
-                {
-                    UnityEngine.Object.Destroy(_amount);
-                }
-                if (_capacity != null)
-                {
-                    UnityEngine.Object.Destroy(_capacity);
-                }
-                if (_consumption != null)
-                {
-                    UnityEngine.Object.Destroy(_consumption);
-                }
-                if (_modded != null)
-                {
-                    UnityEngine.Object.Destroy(_modded);
-                }
-                if (_panel != null)
-                {
-                    UnityEngine.Object.Destroy(_panel);
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Log("[Watch It!] LimitItem:DestroyLimitItem -> Exception: " + e.Message);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using ICities;
 using System;
+using System.Reflection;
 
 namespace WatchIt
 {
@@ -45,7 +46,9 @@ namespace WatchIt
             int selectedIndex;
             float selectedValue;
 
-            group = helper.AddGroup(Name);
+            AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
+
+            group = helper.AddGroup(Name + " - " + assemblyName.Version.Major + "." + assemblyName.Version.Minor);
 
             selectedValue = ModConfig.Instance.RefreshInterval;
             group.AddTextfield("Refresh Interval (in seconds)", selectedValue.ToString(), sel =>
@@ -63,43 +66,12 @@ namespace WatchIt
                 ModProperties.Instance.ResetPanelPosition();
             });
 
-            group = helper.AddGroup("Warning Panel");
+            group = helper.AddGroup("Gauge Panel");
 
-            selected = ModConfig.Instance.WarningKeyMappingEnabled;
-            group.AddCheckbox("On/Off Keymapping Enabled (LEFT CTRL + W)", selected, sel =>
+            selected = ModConfig.Instance.ShowPanel;
+            group.AddCheckbox("Show panel", selected, sel =>
             {
-                ModConfig.Instance.WarningKeyMappingEnabled = sel;
-                ModConfig.Instance.Save();
-            });
-
-            selected = ModConfig.Instance.WarningBuildings;
-            group.AddCheckbox("Include Warnings for Buildings", selected, sel =>
-            {
-                ModConfig.Instance.WarningBuildings = sel;
-                ModConfig.Instance.Save();
-            });
-
-            selected = ModConfig.Instance.WarningNetworks;
-            group.AddCheckbox("Include Warnings for Networks", selected, sel =>
-            {
-                ModConfig.Instance.WarningNetworks = sel;
-                ModConfig.Instance.Save();
-            });
-
-            selectedValue = ModConfig.Instance.WarningThreshold;
-            group.AddTextfield("Threshold", selectedValue.ToString(), sel =>
-            {
-                int.TryParse(sel, out int result);
-                ModConfig.Instance.WarningThreshold = result;
-                ModConfig.Instance.Save();
-            });
-
-            group = helper.AddGroup("Watch Panel");
-
-            selected = ModConfig.Instance.KeyMappingEnabled;
-            group.AddCheckbox("On/Off Keymapping Enabled (LEFT ALT + W)", selected, sel =>
-            {
-                ModConfig.Instance.KeyMappingEnabled = sel;
+                ModConfig.Instance.ShowPanel = sel;
                 ModConfig.Instance.Save();
             });
 
@@ -152,7 +124,28 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
-            group = helper.AddGroup("Watches");
+            selected = ModConfig.Instance.ShowLimitsButton;
+            group.AddCheckbox("Show Limits Button", selected, sel =>
+            {
+                ModConfig.Instance.ShowLimitsButton = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.ShowProblemsButton;
+            group.AddCheckbox("Show Problems Button", selected, sel =>
+            {
+                ModConfig.Instance.ShowProblemsButton = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.ShowStatisticsButton;
+            group.AddCheckbox("Show Statistics Button", selected, sel =>
+            {
+                ModConfig.Instance.ShowStatisticsButton = sel;
+                ModConfig.Instance.Save();
+            });
+
+            group = helper.AddGroup("Gauges");
 
             selected = ModConfig.Instance.ElectricityAvailability;
             group.AddCheckbox("Electricity Availability", selected, sel =>
@@ -336,19 +329,74 @@ namespace WatchIt
                 ModConfig.Instance.Save();
             });
 
-            group = helper.AddGroup("Extra");
+            group = helper.AddGroup("Limit Panel");
 
-            selected = ModConfig.Instance.ShowGameLimitsButton;
-            group.AddCheckbox("Show Game Limits Button", selected, sel =>
+            selected = ModConfig.Instance.LimitAutoRefresh;
+            group.AddCheckbox("Auto-refresh when panel is open", selected, sel =>
             {
-                ModConfig.Instance.ShowGameLimitsButton = sel;
+                ModConfig.Instance.LimitAutoRefresh = sel;
                 ModConfig.Instance.Save();
             });
 
-            selected = ModConfig.Instance.ShowCityStatisticsButton;
-            group.AddCheckbox("Show City Statistics Button", selected, sel =>
+            group = helper.AddGroup("Warning Panel");
+
+            selected = ModConfig.Instance.ShowWarningPanel;
+            group.AddCheckbox("Show panel", selected, sel =>
             {
-                ModConfig.Instance.ShowCityStatisticsButton = sel;
+                ModConfig.Instance.ShowWarningPanel = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.WarningIncludeProblemsForBuildings;
+            group.AddCheckbox("Include Problems for Buildings", selected, sel =>
+            {
+                ModConfig.Instance.WarningIncludeProblemsForBuildings = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.WarningIncludeProblemsForNetworks;
+            group.AddCheckbox("Include Problems for Networks", selected, sel =>
+            {
+                ModConfig.Instance.WarningIncludeProblemsForNetworks = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.WarningAutoOpenClose;
+            group.AddCheckbox("Auto-open/close panel", selected, sel =>
+            {
+                ModConfig.Instance.WarningAutoOpenClose = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selectedValue = ModConfig.Instance.WarningMaxItems;
+            group.AddTextfield("Maximum Warnings (requires re-load)", selectedValue.ToString(), sel =>
+            {
+                int.TryParse(sel, out int result);
+                ModConfig.Instance.WarningMaxItems = result;
+                ModConfig.Instance.Save();
+            });
+
+            group = helper.AddGroup("Problem Panel");
+
+            selected = ModConfig.Instance.ProblemAutoRefresh;
+            group.AddCheckbox("Auto-refresh when panel is open", selected, sel =>
+            {
+                ModConfig.Instance.ProblemAutoRefresh = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selected = ModConfig.Instance.ProblemAutoClose;
+            group.AddCheckbox("Auto-close panel when focusing on building or network", selected, sel =>
+            {
+                ModConfig.Instance.ProblemAutoClose = sel;
+                ModConfig.Instance.Save();
+            });
+
+            selectedValue = ModConfig.Instance.ProblemMaxItems;
+            group.AddTextfield("Maximum Problems (requires re-load)", selectedValue.ToString(), sel =>
+            {
+                int.TryParse(sel, out int result);
+                ModConfig.Instance.ProblemMaxItems = result;
                 ModConfig.Instance.Save();
             });
         }

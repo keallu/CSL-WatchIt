@@ -4,11 +4,11 @@ using UnityEngine;
 namespace WatchIt
 {
     public class ModProperties
-    {
-        public float WarningPanelDefaultPositionX;
-        public float WarningPanelDefaultPositionY;
+    {        
         public float PanelDefaultPositionX;
         public float PanelDefaultPositionY;
+        public float WarningPanelDefaultPositionX;
+        public float WarningPanelDefaultPositionY;
 
         private static ModProperties instance;
 
@@ -17,20 +17,6 @@ namespace WatchIt
             get
             {
                 return instance ?? (instance = new ModProperties());
-            }
-        }
-
-        public void ResetWarningPanelPosition()
-        {
-            try
-            {
-                ModConfig.Instance.WarningPositionX = WarningPanelDefaultPositionX;
-                ModConfig.Instance.WarningPositionY = WarningPanelDefaultPositionY;
-                ModConfig.Instance.Save();
-            }
-            catch (Exception e)
-            {
-                Debug.Log("[Hide It!] ModProperties:ResetWarningPanelPosition -> Exception: " + e.Message);
             }
         }
 
@@ -44,7 +30,21 @@ namespace WatchIt
             }
             catch (Exception e)
             {
-                Debug.Log("[Hide It!] ModProperties:ResetPanelPosition -> Exception: " + e.Message);
+                Debug.Log("[Watch It!] ModProperties:ResetPanelPosition -> Exception: " + e.Message);
+            }
+        }
+
+        public void ResetWarningPanelPosition()
+        {
+            try
+            {
+                ModConfig.Instance.WarningPositionX = WarningPanelDefaultPositionX;
+                ModConfig.Instance.WarningPositionY = WarningPanelDefaultPositionY;
+                ModConfig.Instance.Save();
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] ModProperties:ResetWarningPanelPosition -> Exception: " + e.Message);
             }
         }
     }

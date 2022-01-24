@@ -21,6 +21,29 @@ namespace WatchIt
             return panel;
         }
 
+        public static UIScrollablePanel CreateScrollablePanel(UIComponent parent, string name)
+        {
+            UIScrollablePanel scrollablePanel = parent.AddUIComponent<UIScrollablePanel>();
+            scrollablePanel.name = name;
+
+            return scrollablePanel;
+        }
+
+        public static UIScrollbar CreateScrollbar(UIComponent parent, string name)
+        {
+            UIScrollbar scrollbar = parent.AddUIComponent<UIScrollbar>();
+            scrollbar.name = name;
+
+            return scrollbar;
+        }
+        public static UISlicedSprite CreateSlicedSprite(UIComponent parent, string name)
+        {
+            UISlicedSprite slicedSprite = parent.AddUIComponent<UISlicedSprite>();
+            slicedSprite.name = name;
+
+            return slicedSprite;
+        }
+
         public static UILabel CreateLabel(UIComponent parent, string name, string text)
         {
             UILabel label = parent.AddUIComponent<UILabel>();
@@ -73,6 +96,19 @@ namespace WatchIt
             button.hoveredBgSprite = "RoundBackBigHovered";
             button.pressedBgSprite = "RoundBackBigPressed";
             button.disabledBgSprite = "RoundBackBigDisabled";
+
+            return button;
+        }
+        public static UIButton CreateButton(UIComponent parent, string name, string spriteName)
+        {
+            UIButton button = parent.AddUIComponent<UIButton>();
+            button.name = name;
+
+            button.normalBgSprite = spriteName + "Normal";
+            button.focusedBgSprite = spriteName + "Focused";
+            button.hoveredBgSprite = spriteName + "Hovered";
+            button.pressedBgSprite = spriteName + "Pressed";
+            button.disabledBgSprite = spriteName + "Disabled";
 
             return button;
         }
@@ -131,9 +167,14 @@ namespace WatchIt
             button.hoveredBgSprite = "buttonclosehover";
             button.pressedBgSprite = "buttonclosepressed";
 
-            button.eventClick += (component, eventParam) =>
+            button.eventClicked += (component, eventParam) =>
             {
-                parent.Hide();
+                if (!eventParam.used)
+                {
+                    parent.Hide();
+
+                    eventParam.Use();
+                }
             };
 
             return button;
@@ -149,6 +190,49 @@ namespace WatchIt
             dragHandle.target = parent;
 
             return dragHandle;
+        }
+
+        public static UITabstrip CreateTabStrip(UIComponent parent)
+        {
+            UITabstrip tabstrip = parent.AddUIComponent<UITabstrip>();
+            tabstrip.name = "TabStrip";
+            tabstrip.clipChildren = true;
+
+            return tabstrip;
+        }
+
+        public static UITabContainer CreateTabContainer(UIComponent parent)
+        {
+            UITabContainer tabContainer = parent.AddUIComponent<UITabContainer>();
+            tabContainer.name = "TabContainer";
+
+            return tabContainer;
+        }
+
+        public static UIButton CreateTabButton(UIComponent parent)
+        {
+            UIButton button = parent.AddUIComponent<UIButton>();
+            button.name = "TabButton";
+
+            button.height = 26f;
+            button.width = 120f;
+
+            button.textHorizontalAlignment = UIHorizontalAlignment.Center;
+            button.textVerticalAlignment = UIVerticalAlignment.Middle;
+
+            button.normalBgSprite = "GenericTab";
+            button.disabledBgSprite = "GenericTabDisabled";
+            button.focusedBgSprite = "GenericTabFocused";
+            button.hoveredBgSprite = "GenericTabHovered";
+            button.pressedBgSprite = "GenericTabPressed";
+
+            button.textColor = new Color32(255, 255, 255, 255);
+            button.disabledTextColor = new Color32(111, 111, 111, 255);
+            button.focusedTextColor = new Color32(16, 16, 16, 255);
+            button.hoveredTextColor = new Color32(255, 255, 255, 255);
+            button.pressedTextColor = new Color32(255, 255, 255, 255);
+
+            return button;
         }
     }
 }

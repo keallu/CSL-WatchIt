@@ -57,22 +57,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
-    <Compile Include="LimitItem.cs" />
-    <Compile Include="LimitsPanel.cs" />
+    <Compile Include="Managers\ProblemType.cs" />
+    <Compile Include="Managers\ProblemManager.cs" />
+    <Compile Include="Panels\WarningItem.cs" />
+    <Compile Include="Panels\WarningPanel.cs" />
+    <Compile Include="Panels\LimitItem.cs" />
+    <Compile Include="Panels\LimitPanel.cs" />
     <Compile Include="Loading.cs" />
-    <Compile Include="TextUtils.cs" />
-    <Compile Include="Warning.cs" />
+    <Compile Include="Panels\GaugePanel.cs" />
     <Compile Include="ModProperties.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="ModInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceLoader.cs" />
     <Compile Include="UIUtils.cs" />
-    <Compile Include="WarningItem.cs" />
-    <Compile Include="WarningsPanel.cs" />
-    <Compile Include="Watch.cs" />
+    <Compile Include="Panels\ProblemItem.cs" />
+    <Compile Include="Panels\ProblemPanel.cs" />
+    <Compile Include="Panels\GaugeItem.cs" />
     <Compile Include="ModManager.cs" />
-    <Compile Include="WarningUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Crematorium.png" />
@@ -85,9 +87,9 @@
     <EmbeddedResource Include="Icons\Sewage.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\WatchGreen.png" />
-    <EmbeddedResource Include="Icons\WatchRed.png" />
-    <EmbeddedResource Include="Icons\WatchYellow.png" />
+    <EmbeddedResource Include="Icons\GaugeGreen.png" />
+    <EmbeddedResource Include="Icons\GaugeRed.png" />
+    <EmbeddedResource Include="Icons\GaugeYellow.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Water.png" />
@@ -156,6 +158,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\Library.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Icons\Problems.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

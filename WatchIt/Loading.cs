@@ -2,6 +2,7 @@
 using ICities;
 using System;
 using UnityEngine;
+using WatchIt.Panels;
 
 namespace WatchIt
 {
@@ -10,8 +11,11 @@ namespace WatchIt
     {
         private LoadMode _loadMode;
         private GameObject _modManagerGameObject;
-        private GameObject _warningsPanelGameObject;
-        private GameObject _limitsPanelGameObject;
+
+        private GameObject _warningPanelameObject;
+        private GameObject _gaugePanelGameObject;
+        private GameObject _limitPanelGameObject;
+        private GameObject _problemPanelGameObject;
 
         public override void OnLevelLoaded(LoadMode mode)
         {
@@ -30,13 +34,21 @@ namespace WatchIt
                 UIView uiView = UnityEngine.Object.FindObjectOfType<UIView>();
                 if (uiView != null)
                 {
-                    _warningsPanelGameObject = new GameObject("WatchItWarningsPanel");
-                    _warningsPanelGameObject.transform.parent = uiView.transform;
-                    _warningsPanelGameObject.AddComponent<WarningsPanel>();
+                    _warningPanelameObject = new GameObject("WatchItWarningPanel");
+                    _warningPanelameObject.transform.parent = uiView.transform;
+                    _warningPanelameObject.AddComponent<WarningPanel>();
 
-                    _limitsPanelGameObject = new GameObject("WatchItLimitsPanel");
-                    _limitsPanelGameObject.transform.parent = uiView.transform;
-                    _limitsPanelGameObject.AddComponent<LimitsPanel>();
+                    _gaugePanelGameObject = new GameObject("WatchItGaugePanel");
+                    _gaugePanelGameObject.transform.parent = uiView.transform;
+                    _gaugePanelGameObject.AddComponent<GaugePanel>();
+
+                    _limitPanelGameObject = new GameObject("WatchItLimitPanel");
+                    _limitPanelGameObject.transform.parent = uiView.transform;
+                    _limitPanelGameObject.AddComponent<LimitPanel>();
+
+                    _problemPanelGameObject = new GameObject("WatchItProblemPanel");
+                    _problemPanelGameObject.transform.parent = uiView.transform;
+                    _problemPanelGameObject.AddComponent<ProblemPanel>();
                 }
             }
             catch (Exception e)
@@ -54,14 +66,25 @@ namespace WatchIt
                     return;
                 }
 
+                if (_problemPanelGameObject != null)
+                {
+                    UnityEngine.Object.Destroy(_problemPanelGameObject.gameObject);
+                }
+                if (_limitPanelGameObject != null)
+                {
+                    UnityEngine.Object.Destroy(_limitPanelGameObject.gameObject);
+                }
+                if (_gaugePanelGameObject != null)
+                {
+                    UnityEngine.Object.Destroy(_gaugePanelGameObject.gameObject);
+                }
+                if (_warningPanelameObject != null)
+                {
+                    UnityEngine.Object.Destroy(_warningPanelameObject.gameObject);
+                }
                 if (_modManagerGameObject != null)
                 {
-                    UnityEngine.Object.Destroy(_modManagerGameObject);
-                }
-
-                if (_limitsPanelGameObject != null)
-                {
-                    UnityEngine.Object.Destroy(_limitsPanelGameObject);
+                    UnityEngine.Object.Destroy(_modManagerGameObject.gameObject);
                 }
             }
             catch (Exception e)
