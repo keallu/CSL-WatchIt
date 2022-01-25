@@ -13,6 +13,7 @@ namespace WatchIt.Managers
         public List<ushort> BuildingsWithProblems { get; } = new List<ushort>();
         public List<ushort> NetNodesWithProblems { get; } = new List<ushort>();
         public List<ushort> NetSegmentsWithProblems { get; } = new List<ushort>();
+        private enum SourceType { Building, Network };
 
         private static readonly PositionData<Notification.Problem>[] keyNotificationsNormal = Utils.GetOrderedEnumData<Notification.Problem>("Normal");
 
@@ -208,7 +209,7 @@ namespace WatchIt.Managers
                     {
                         if (buildingManager.m_buildings.m_buffer[i].m_flags != Building.Flags.None)
                         {
-                            UpdateProblemTypes(problems);
+                            UpdateProblemTypes(SourceType.Building, problems);
                             BuildingsWithProblems.Add(i);
                         }
                     }
@@ -228,7 +229,7 @@ namespace WatchIt.Managers
                     {
                         if (netManager.m_nodes.m_buffer[i].m_flags != NetNode.Flags.None && (netManager.m_nodes.m_buffer[i].m_flags & NetNode.Flags.Temporary) == 0)
                         {
-                            UpdateProblemTypes(problems);
+                            UpdateProblemTypes(SourceType.Network, problems);
                             NetNodesWithProblems.Add(i);
                         }
                     }
@@ -244,7 +245,7 @@ namespace WatchIt.Managers
                     {
                         if (netManager.m_segments.m_buffer[i].m_flags != NetSegment.Flags.None)
                         {
-                            UpdateProblemTypes(problems);
+                            UpdateProblemTypes(SourceType.Network, problems);
                             NetSegmentsWithProblems.Add(i);
                         }
                     }
@@ -261,12 +262,11 @@ namespace WatchIt.Managers
             }
         }
 
-        private void UpdateProblemTypes(Notification.Problem problems)
+        private void UpdateProblemTypes(SourceType sourceType, Notification.Problem problems)
         {
             try
             {
                 Notification.Problem enumValue;
-                ProblemType problemType;
 
                 for (int i = 0; i < keyNotifications.Length; i++)
                 {
@@ -278,55 +278,19 @@ namespace WatchIt.Managers
                         {
                             string sprite = keyNotificationsFatal[i].enumName;
 
-                            problemType = ProblemTypes.Find(x => x.Sprite == sprite);
-
-                            if (problemType == null)
-                            {
-                                problemType = new ProblemType
-                                {
-                                    Sprite = sprite
-                                };
-
-                                ProblemTypes.Add(problemType);
-                            }
-
-                            problemType.Total++;
+                            AddOrUpdateProblemType(sourceType, sprite);
                         }
                         else if ((problems & Notification.Problem.MajorProblem) != 0)
                         {
                             string sprite = keyNotificationsMajor[i].enumName;
 
-                            problemType = ProblemTypes.Find(x => x.Sprite == sprite);
-
-                            if (problemType == null)
-                            {
-                                problemType = new ProblemType
-                                {
-                                    Sprite = sprite
-                                };
-
-                                ProblemTypes.Add(problemType);
-                            }
-
-                            problemType.Total++;
+                            AddOrUpdateProblemType(sourceType, sprite);
                         }
                         else
                         {
                             string sprite = keyNotificationsNormal[i].enumName;
 
-                            problemType = ProblemTypes.Find(x => x.Sprite == sprite);
-
-                            if (problemType == null)
-                            {
-                                problemType = new ProblemType
-                                {
-                                    Sprite = sprite
-                                };
-
-                                ProblemTypes.Add(problemType);
-                            }
-
-                            problemType.Total++;
+                            AddOrUpdateProblemType(sourceType, sprite);
                         }
                     }
                 }
@@ -334,6 +298,42 @@ namespace WatchIt.Managers
             catch (Exception e)
             {
                 Debug.Log("[Watch It!] ProblemManager:UpdateProblemTypes -> Exception: " + e.Message);
+            }
+        }
+
+        private void AddOrUpdateProblemType(SourceType sourceType, string sprite)
+        {
+            try
+            {
+                ProblemType problemType = ProblemTypes.Find(x => x.Sprite == sprite);
+
+                if (problemType == null)
+                {
+                    problemType = new ProblemType
+                    {
+                        Sprite = sprite
+                    };
+
+                    ProblemTypes.Add(problemType);
+                }
+
+                switch (sourceType)
+                {
+                    case SourceType.Building:
+                        problemType.TotalBuildings++;
+                        break;
+                    case SourceType.Network:
+                        problemType.TotalNetworks++;
+                        break;
+                    default:
+                        break;
+                }
+
+                problemType.Total++;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("[Watch It!] ProblemManager:AddOrUpdateProblemType -> Exception: " + e.Message);
             }
         }
     }

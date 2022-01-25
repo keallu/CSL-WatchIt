@@ -5,8 +5,8 @@
     {
         public bool ConfigUpdated { get; set; }
         public bool ShowPanel { get; set; } = true;
-        public float PositionX { get; set; }
-        public float PositionY { get; set; }
+        public float PositionX { get; set; } = 0f;
+        public float PositionY { get; set; } = 0f;
         public bool VerticalLayout { get; set; } = true;
         public bool DoubleRibbonLayout { get; set; } = true;
         public float RefreshInterval { get; set; } = 5.0f;
@@ -71,8 +71,13 @@
             }
         }
 
-        public void Save()
+        public void Apply()
         {
+            ConfigUpdated = true;
+        }
+
+        public void Save()
+        {            
             Configuration<ModConfig>.Save();
             ConfigUpdated = true;
         }

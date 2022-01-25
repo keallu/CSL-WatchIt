@@ -29,16 +29,7 @@ namespace WatchIt.Panels
 
             try
             {
-                if (_esc == null)
-                {
-                    _esc = GameObject.Find("Esc")?.GetComponent<UIButton>();
 
-                    if (_esc != null)
-                    {
-                        ModProperties.Instance.PanelDefaultPositionX = ModConfig.Instance.DoubleRibbonLayout ? _esc.absolutePosition.x - 29f : _esc.absolutePosition.x - 13f;
-                        ModProperties.Instance.PanelDefaultPositionY = _esc.absolutePosition.y + 50f;
-                    }
-                }
             }
             catch (Exception e)
             {
@@ -52,6 +43,11 @@ namespace WatchIt.Panels
 
             try
             {
+                if (_esc == null)
+                {
+                    _esc = GameObject.Find("Esc")?.GetComponent<UIButton>();
+                }
+
                 if (_limitPanel == null)
                 {
                     _limitPanel = GameObject.Find("WatchItLimitPanel")?.GetComponent<LimitPanel>();
@@ -62,13 +58,15 @@ namespace WatchIt.Panels
                     _problemPanel = GameObject.Find("WatchItProblemPanel")?.GetComponent<ProblemPanel>();
                 }
 
-                if (ModConfig.Instance.PositionX == 0.0f)
+                if (_esc != null)
                 {
-                    ModConfig.Instance.PositionX = ModProperties.Instance.PanelDefaultPositionX;
+                    ModProperties.Instance.PanelDefaultPositionX = ModConfig.Instance.DoubleRibbonLayout ? _esc.absolutePosition.x - 29f : _esc.absolutePosition.x - 13f;
+                    ModProperties.Instance.PanelDefaultPositionY = _esc.absolutePosition.y + 50f;
                 }
 
-                if (ModConfig.Instance.PositionY == 0.0f)
+                if (ModConfig.Instance.PositionX == 0f && ModConfig.Instance.PositionY == 0f)
                 {
+                    ModConfig.Instance.PositionX = ModProperties.Instance.PanelDefaultPositionX;
                     ModConfig.Instance.PositionY = ModProperties.Instance.PanelDefaultPositionY;
                 }
 

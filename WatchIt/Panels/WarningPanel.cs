@@ -1,6 +1,7 @@
 ﻿using ColossalFramework.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using WatchIt.Managers;
 
@@ -27,16 +28,7 @@ namespace WatchIt.Panels
 
             try
             {
-                if (_esc == null)
-                {
-                    _esc = GameObject.Find("Esc")?.GetComponent<UIButton>();
 
-                    if (_esc != null)
-                    {
-                        ModProperties.Instance.WarningPanelDefaultPositionX = _esc.absolutePosition.x - 1300f;
-                        ModProperties.Instance.WarningPanelDefaultPositionY = _esc.absolutePosition.y;
-                    }
-                }
             }
             catch (Exception e)
             {
@@ -50,18 +42,25 @@ namespace WatchIt.Panels
 
             try
             {
+                if (_esc == null)
+                {
+                    _esc = GameObject.Find("Esc")?.GetComponent<UIButton>();
+                }
+
                 if (_problemPanel == null)
                 {
                     _problemPanel = GameObject.Find("WatchItProblemPanel")?.GetComponent<ProblemPanel>();
                 }
 
-                if (ModConfig.Instance.WarningPositionX == 0.0f)
+                if (_esc != null)
                 {
-                    ModConfig.Instance.WarningPositionX = ModProperties.Instance.WarningPanelDefaultPositionX;
+                    ModProperties.Instance.WarningPanelDefaultPositionX = _esc.absolutePosition.x - 1300f;
+                    ModProperties.Instance.WarningPanelDefaultPositionY = _esc.absolutePosition.y;
                 }
 
-                if (ModConfig.Instance.WarningPositionY == 0.0f)
+                if (ModConfig.Instance.WarningPositionX == 0f && ModConfig.Instance.WarningPositionY == 0f)
                 {
+                    ModConfig.Instance.WarningPositionX = ModProperties.Instance.WarningPanelDefaultPositionX;
                     ModConfig.Instance.WarningPositionY = ModProperties.Instance.WarningPanelDefaultPositionY;
                 }
 
@@ -290,11 +289,41 @@ namespace WatchIt.Panels
                 {
                     if (_warningItems != null)
                     {
+                        List<ProblemType> problemTypes = new List<ProblemType>();
+
+                        if (ModConfig.Instance.WarningIncludeProblemsForBuildings && !ModConfig.Instance.WarningIncludeProblemsForNetworks)
+                        {
+                            problemTypes = problemManager.ProblemTypes.FindAll(x => x.TotalBuildings > 1).OrderByDescending(x => x.TotalBuildings).ToList();
+                        }
+                        else if (!ModConfig.Instance.WarningIncludeProblemsForBuildings && ModConfig.Instance.WarningIncludeProblemsForNetworks)
+                        {
+                            problemTypes = problemManager.ProblemTypes.FindAll(x => x.TotalNetworks > 1).OrderByDescending(x => x.TotalNetworks).ToList();
+                        }
+                        else if (ModConfig.Instance.WarningIncludeProblemsForBuildings && ModConfig.Instance.WarningIncludeProblemsForNetworks)
+                        {
+                            problemTypes = problemManager.ProblemTypes;
+                        }
+
+                        int total;
+
                         for (int i = 0; i < _warningItems.Count; i++)
                         {
-                            if (i < problemManager.ProblemTypes.Count)
+                            if (i < problemTypes.Count)
                             {
-                                _warningItems[i].UpdateWarningItem(problemManager.ProblemTypes[i].Sprite, problemManager.ProblemTypes[i].Total.ToString());
+                                if (ModConfig.Instance.WarningIncludeProblemsForBuildings && !ModConfig.Instance.WarningIncludeProblemsForNetworks)
+                                {
+                                    total = problemTypes[i].TotalBuildings;
+                                }
+                                else if (!ModConfig.Instance.WarningIncludeProblemsForBuildings && ModConfig.Instance.WarningIncludeProblemsForNetworks)
+                                {
+                                    total = problemTypes[i].TotalNetworks;
+                                }
+                                else
+                                {
+                                    total = problemTypes[i].Total;
+                                }
+
+                                _warningItems[i].UpdateWarningItem(problemTypes[i].Sprite, total.ToString());
 
                                 _warningItems[i].Show();
                             }
@@ -306,7 +335,7 @@ namespace WatchIt.Panels
 
                         if (ModConfig.Instance.WarningAutoOpenClose)
                         {
-                            if (problemManager.ProblemTypes.Count > 0)
+                            if (problemTypes.Count > 0)
                             {
                                 _openClosePanel.isVisible = true;
                                 _button.normalBgSprite = "RoundBackBigFocused";

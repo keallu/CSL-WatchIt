@@ -27,6 +27,7 @@ namespace WatchIt.Panels
         private UISlicedSprite _problemScrollbarTrack;
         private UISlicedSprite _problemScrollbarThumb;
         private UILabel _lastUpdated;
+        private UILabel _counter;
 
         private List<ProblemItem> _problemItems;
 
@@ -36,7 +37,7 @@ namespace WatchIt.Panels
 
             try
             {
-                _notificationsAtlas = ResourceLoader.GetAtlas("Notifications");
+
             }
             catch (Exception e)
             {
@@ -50,6 +51,8 @@ namespace WatchIt.Panels
 
             try
             {
+                _notificationsAtlas = ResourceLoader.GetAtlas("Notifications");
+
                 CreateUI();
             }
             catch (Exception e)
@@ -98,6 +101,10 @@ namespace WatchIt.Panels
                 foreach (ProblemItem problemItem in _problemItems)
                 {
                     problemItem.DestroyProblemItem();
+                }
+                if (_counter != null)
+                {
+                    Destroy(_counter.gameObject);
                 }
                 if (_lastUpdated != null)
                 {
@@ -249,11 +256,19 @@ namespace WatchIt.Panels
                 _problemScrollbar.trackObject = _problemScrollbarTrack;
                 _problemScrollbar.thumbObject = _problemScrollbarThumb;
 
-                _lastUpdated = UIUtils.CreateLabel(this, "UpdateTime", "Updated: Never");
+                _lastUpdated = UIUtils.CreateLabel(this, "LastUpdated", "Updated: Never");
                 _lastUpdated.textScale = 0.7f;
-                _lastUpdated.textAlignment = UIHorizontalAlignment.Right;
+                _lastUpdated.textAlignment = UIHorizontalAlignment.Left;
                 _lastUpdated.verticalAlignment = UIVerticalAlignment.Middle;
                 _lastUpdated.relativePosition = new Vector3(30f, height - 38f);
+
+                _counter = UIUtils.CreateLabel(this, "Counter", "0 of 0");
+                _counter.autoSize = false;
+                _counter.width = 200f;
+                _counter.textScale = 0.7f;
+                _counter.textAlignment = UIHorizontalAlignment.Right;
+                _counter.verticalAlignment = UIVerticalAlignment.Middle;
+                _counter.relativePosition = new Vector3(width - _counter.width - 30f, height - 38f);
 
                 CreateProblems();
             }
@@ -360,6 +375,8 @@ namespace WatchIt.Panels
                                 {
                                     _problemItems[i].Hide();
                                 }
+
+                                _counter.text = $"{buildingShown} of {problemManager.BuildingsWithProblems.Count} buildings";
                             }
                             else if (_tabstrip.selectedIndex == 1)
                             {
@@ -385,6 +402,8 @@ namespace WatchIt.Panels
                                 {
                                     _problemItems[i].Hide();
                                 }
+
+                                _counter.text = $"{netNodesShown + netSegmentShown} of {problemManager.NetNodesWithProblems.Count + problemManager.NetSegmentsWithProblems.Count} networks";
                             }
                         }
 
