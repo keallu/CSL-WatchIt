@@ -1,4 +1,4 @@
-﻿using ColossalFramework;
+using ColossalFramework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,13 +15,13 @@ namespace WatchIt.Managers
         public List<ushort> NetSegmentsWithProblems { get; } = new List<ushort>();
         private enum SourceType { Building, Network };
 
-        private static readonly PositionData<Notification.Problem>[] keyNotificationsNormal = Utils.GetOrderedEnumData<Notification.Problem>("Normal");
+        private static readonly PositionData<Notification.Problem1>[] keyNotificationsNormal = Utils.GetOrderedEnumData<Notification.Problem1>("Normal");
 
-        private static readonly PositionData<Notification.Problem>[] keyNotificationsMajor = Utils.GetOrderedEnumData<Notification.Problem>("Major");
+        private static readonly PositionData<Notification.Problem1>[] keyNotificationsMajor = Utils.GetOrderedEnumData<Notification.Problem1>("Major");
 
-        private static readonly PositionData<Notification.Problem>[] keyNotificationsFatal = Utils.GetOrderedEnumData<Notification.Problem>("Fatal");
+        private static readonly PositionData<Notification.Problem1>[] keyNotificationsFatal = Utils.GetOrderedEnumData<Notification.Problem1>("Fatal");
 
-        private static readonly PositionData<Notification.Problem>[] keyNotifications = Utils.GetOrderedEnumData<Notification.Problem>("Text");
+        private static readonly PositionData<Notification.Problem1>[] keyNotifications = Utils.GetOrderedEnumData<Notification.Problem1>("Text");
 
         private static ProblemManager instance;
 
@@ -82,19 +82,19 @@ namespace WatchIt.Managers
         {
             List<string> sprites = new List<string>();
 
-            Notification.Problem enumValue;
+            Notification.Problem1 enumValue;
 
             for (int i = 0; i < keyNotifications.Length; i++)
             {
                 enumValue = keyNotifications[i].enumValue;
 
-                if ((building.m_problems & enumValue) != 0)
-                {
-                    if ((building.m_problems & Notification.Problem.FatalProblem) != 0)
+                if (!(building.m_problems & enumValue).Equals(0))
+                  {
+                    if (!(building.m_problems & Notification.Problem1.FatalProblem).Equals(0))
                     {
                         sprites.Add(keyNotificationsFatal[i].enumName);
                     }
-                    else if ((building.m_problems & Notification.Problem.MajorProblem) != 0)
+                    else if (!(building.m_problems & Notification.Problem1.MajorProblem).Equals(0))
                     {
                         sprites.Add(keyNotificationsMajor[i].enumName);
                     }
@@ -112,19 +112,19 @@ namespace WatchIt.Managers
         {
             List<string> sprites = new List<string>();
 
-            Notification.Problem enumValue;
+            Notification.Problem1 enumValue;
 
             for (int i = 0; i < keyNotifications.Length; i++)
             {
                 enumValue = keyNotifications[i].enumValue;
 
-                if ((netNode.m_problems & enumValue) != 0)
+                if (!(netNode.m_problems & enumValue).Equals(0))
                 {
-                    if ((netNode.m_problems & Notification.Problem.FatalProblem) != 0)
+                    if (!(netNode.m_problems & Notification.Problem1.FatalProblem).Equals(0))
                     {
                         sprites.Add(keyNotificationsFatal[i].enumName);
                     }
-                    else if ((netNode.m_problems & Notification.Problem.MajorProblem) != 0)
+                    else if (!(netNode.m_problems & Notification.Problem1.MajorProblem).Equals(0))
                     {
                         sprites.Add(keyNotificationsMajor[i].enumName);
                     }
@@ -142,19 +142,19 @@ namespace WatchIt.Managers
         {
             List<string> sprites = new List<string>();
 
-            Notification.Problem enumValue;
+            Notification.Problem1 enumValue;
 
             for (int i = 0; i < keyNotifications.Length; i++)
             {
                 enumValue = keyNotifications[i].enumValue;
 
-                if ((netSegment.m_problems & enumValue) != 0)
+                if (!(netSegment.m_problems & enumValue).Equals(0))
                 {
-                    if ((netSegment.m_problems & Notification.Problem.FatalProblem) != 0)
+                    if (!(netSegment.m_problems & Notification.Problem1.FatalProblem).Equals(0))
                     {
                         sprites.Add(keyNotificationsFatal[i].enumName);
                     }
-                    else if ((netSegment.m_problems & Notification.Problem.MajorProblem) != 0)
+                    else if (!(netSegment.m_problems & Notification.Problem1.MajorProblem).Equals(0))
                     {
                         sprites.Add(keyNotificationsMajor[i].enumName);
                     }
@@ -194,7 +194,7 @@ namespace WatchIt.Managers
                 NetNodesWithProblems.Clear();
                 NetSegmentsWithProblems.Clear();
 
-                Notification.Problem problems;
+                Notification.Problem1 problems;
 
                 BuildingManager buildingManager = Singleton<BuildingManager>.instance;
                 Building building;
@@ -205,7 +205,7 @@ namespace WatchIt.Managers
 
                     problems = building.m_problems;
 
-                    if (problems != Notification.Problem.None)
+                    if (problems != Notification.Problem1.None)
                     {
                         if (buildingManager.m_buildings.m_buffer[i].m_flags != Building.Flags.None)
                         {
@@ -225,7 +225,7 @@ namespace WatchIt.Managers
 
                     problems = netNode.m_problems;
 
-                    if (problems != Notification.Problem.None)
+                    if (problems != Notification.Problem1.None)
                     {
                         if (netManager.m_nodes.m_buffer[i].m_flags != NetNode.Flags.None && (netManager.m_nodes.m_buffer[i].m_flags & NetNode.Flags.Temporary) == 0)
                         {
@@ -241,7 +241,7 @@ namespace WatchIt.Managers
 
                     problems = netSegment.m_problems;
 
-                    if (problems != Notification.Problem.None)
+                    if (problems != Notification.Problem1.None)
                     {
                         if (netManager.m_segments.m_buffer[i].m_flags != NetSegment.Flags.None)
                         {
@@ -262,11 +262,11 @@ namespace WatchIt.Managers
             }
         }
 
-        private void UpdateProblemTypes(SourceType sourceType, Notification.Problem problems)
+        private void UpdateProblemTypes(SourceType sourceType, Notification.Problem1 problems)
         {
             try
             {
-                Notification.Problem enumValue;
+                Notification.Problem1 enumValue;
 
                 for (int i = 0; i < keyNotifications.Length; i++)
                 {
@@ -274,13 +274,13 @@ namespace WatchIt.Managers
 
                     if ((problems & enumValue) != 0)
                     {
-                        if ((problems & Notification.Problem.FatalProblem) != 0)
+                        if ((problems & Notification.Problem1.FatalProblem) != 0)
                         {
                             string sprite = keyNotificationsFatal[i].enumName;
 
                             AddOrUpdateProblemType(sourceType, sprite);
                         }
-                        else if ((problems & Notification.Problem.MajorProblem) != 0)
+                        else if ((problems & Notification.Problem1.MajorProblem) != 0)
                         {
                             string sprite = keyNotificationsMajor[i].enumName;
 
