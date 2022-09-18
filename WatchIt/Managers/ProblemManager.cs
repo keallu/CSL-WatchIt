@@ -88,13 +88,13 @@ namespace WatchIt.Managers
             {
                 enumValue = keyNotifications[i].enumValue;
 
-                if (!(building.m_problems & enumValue).Equals(0))
+                if ((building.m_problems & enumValue).IsNotNone)
                   {
-                    if (!(building.m_problems & Notification.Problem1.FatalProblem).Equals(0))
+                    if ((building.m_problems & Notification.Problem1.FatalProblem).IsNotNone)
                     {
                         sprites.Add(keyNotificationsFatal[i].enumName);
                     }
-                    else if (!(building.m_problems & Notification.Problem1.MajorProblem).Equals(0))
+                    else if ((building.m_problems & Notification.Problem1.MajorProblem).IsNotNone)
                     {
                         sprites.Add(keyNotificationsMajor[i].enumName);
                     }
@@ -118,13 +118,13 @@ namespace WatchIt.Managers
             {
                 enumValue = keyNotifications[i].enumValue;
 
-                if (!(netNode.m_problems & enumValue).Equals(0))
+                if ((netNode.m_problems & enumValue).IsNotNone)
                 {
-                    if (!(netNode.m_problems & Notification.Problem1.FatalProblem).Equals(0))
+                    if ((netNode.m_problems & Notification.Problem1.FatalProblem).IsNotNone)
                     {
                         sprites.Add(keyNotificationsFatal[i].enumName);
                     }
-                    else if (!(netNode.m_problems & Notification.Problem1.MajorProblem).Equals(0))
+                    else if ((netNode.m_problems & Notification.Problem1.MajorProblem).IsNotNone)
                     {
                         sprites.Add(keyNotificationsMajor[i].enumName);
                     }
@@ -148,13 +148,13 @@ namespace WatchIt.Managers
             {
                 enumValue = keyNotifications[i].enumValue;
 
-                if (!(netSegment.m_problems & enumValue).Equals(0))
+                if ((netSegment.m_problems & enumValue).IsNotNone)
                 {
-                    if (!(netSegment.m_problems & Notification.Problem1.FatalProblem).Equals(0))
+                    if ((netSegment.m_problems & Notification.Problem1.FatalProblem).IsNotNone)
                     {
                         sprites.Add(keyNotificationsFatal[i].enumName);
                     }
-                    else if (!(netSegment.m_problems & Notification.Problem1.MajorProblem).Equals(0))
+                    else if ((netSegment.m_problems & Notification.Problem1.MajorProblem).IsNotNone)
                     {
                         sprites.Add(keyNotificationsMajor[i].enumName);
                     }
