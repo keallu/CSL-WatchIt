@@ -42,13 +42,14 @@ namespace WatchIt
         public void OnSettingsUI(UIHelperBase helper)
         {
             UIHelperBase group;
-            bool selected;
-            int selectedIndex;
-            float selectedValue;
 
             AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
 
             group = helper.AddGroup(Name + " - " + assemblyName.Version.Major + "." + assemblyName.Version.Minor);
+
+            bool selected;
+            int selectedIndex;
+            float selectedValue;
 
             selectedValue = ModConfig.Instance.RefreshInterval;
             group.AddTextfield("Refresh Interval (in seconds)", selectedValue.ToString(), sel =>

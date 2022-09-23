@@ -12,7 +12,7 @@ namespace WatchIt
         private LoadMode _loadMode;
         private GameObject _modManagerGameObject;
 
-        private GameObject _warningPanelameObject;
+        private GameObject _warningPanelGameObject;
         private GameObject _gaugePanelGameObject;
         private GameObject _limitPanelGameObject;
         private GameObject _problemPanelGameObject;
@@ -34,9 +34,9 @@ namespace WatchIt
                 UIView uiView = UnityEngine.Object.FindObjectOfType<UIView>();
                 if (uiView != null)
                 {
-                    _warningPanelameObject = new GameObject("WatchItWarningPanel");
-                    _warningPanelameObject.transform.parent = uiView.transform;
-                    _warningPanelameObject.AddComponent<WarningPanel>();
+                    _warningPanelGameObject = new GameObject("WatchItWarningPanel");
+                    _warningPanelGameObject.transform.parent = uiView.transform;
+                    _warningPanelGameObject.AddComponent<WarningPanel>();
 
                     _gaugePanelGameObject = new GameObject("WatchItGaugePanel");
                     _gaugePanelGameObject.transform.parent = uiView.transform;
@@ -78,9 +78,9 @@ namespace WatchIt
                 {
                     UnityEngine.Object.Destroy(_gaugePanelGameObject.gameObject);
                 }
-                if (_warningPanelameObject != null)
+                if (_warningPanelGameObject != null)
                 {
-                    UnityEngine.Object.Destroy(_warningPanelameObject.gameObject);
+                    UnityEngine.Object.Destroy(_warningPanelGameObject.gameObject);
                 }
                 if (_modManagerGameObject != null)
                 {

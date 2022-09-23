@@ -15,13 +15,17 @@ namespace WatchIt.Managers
         public List<ushort> NetSegmentsWithProblems { get; } = new List<ushort>();
         private enum SourceType { Building, Network };
 
-        private static readonly PositionData<Notification.Problem>[] keyNotificationsNormal = Utils.GetOrderedEnumData<Notification.Problem>("Normal");
+        private static readonly PositionData<Notification.Problem1>[] keyNotificationsNormal1 = Utils.GetOrderedEnumData<Notification.Problem1>("Normal");
 
-        private static readonly PositionData<Notification.Problem>[] keyNotificationsMajor = Utils.GetOrderedEnumData<Notification.Problem>("Major");
+        private static readonly PositionData<Notification.Problem1>[] keyNotificationsMajor1 = Utils.GetOrderedEnumData<Notification.Problem1>("Major");
 
-        private static readonly PositionData<Notification.Problem>[] keyNotificationsFatal = Utils.GetOrderedEnumData<Notification.Problem>("Fatal");
+        private static readonly PositionData<Notification.Problem1>[] keyNotificationsFatal1 = Utils.GetOrderedEnumData<Notification.Problem1>("Fatal");
 
-        private static readonly PositionData<Notification.Problem>[] keyNotifications = Utils.GetOrderedEnumData<Notification.Problem>("Text");
+        private static readonly PositionData<Notification.Problem1>[] keyNotifications1 = Utils.GetOrderedEnumData<Notification.Problem1>("Text");
+
+        private static readonly PositionData<Notification.Problem2>[] keyNotificationsNormal2 = Utils.GetOrderedEnumData<Notification.Problem2>("Normal");
+
+        private static readonly PositionData<Notification.Problem2>[] keyNotifications2 = Utils.GetOrderedEnumData<Notification.Problem2>("Text");
 
         private static ProblemManager instance;
 
@@ -82,26 +86,38 @@ namespace WatchIt.Managers
         {
             List<string> sprites = new List<string>();
 
-            Notification.Problem enumValue;
+            Notification.Problem1 enumValue1;
 
-            for (int i = 0; i < keyNotifications.Length; i++)
+            for (int i = 0; i < keyNotifications1.Length; i++)
             {
-                enumValue = keyNotifications[i].enumValue;
+                enumValue1 = keyNotifications1[i].enumValue;
 
-                if ((building.m_problems & enumValue) != 0)
+                if ((building.m_problems & enumValue1).IsNotNone)
                 {
-                    if ((building.m_problems & Notification.Problem.FatalProblem) != 0)
+                    if ((building.m_problems & Notification.Problem1.FatalProblem).IsNotNone)
                     {
-                        sprites.Add(keyNotificationsFatal[i].enumName);
+                        sprites.Add(keyNotificationsFatal1[i].enumName);
                     }
-                    else if ((building.m_problems & Notification.Problem.MajorProblem) != 0)
+                    else if ((building.m_problems & Notification.Problem1.MajorProblem).IsNotNone)
                     {
-                        sprites.Add(keyNotificationsMajor[i].enumName);
+                        sprites.Add(keyNotificationsMajor1[i].enumName);
                     }
                     else
                     {
-                        sprites.Add(keyNotificationsNormal[i].enumName);
+                        sprites.Add(keyNotificationsNormal1[i].enumName);
                     }
+                }
+            }
+
+            Notification.Problem2 enumValue2;
+
+            for (int i = 0; i < keyNotifications2.Length; i++)
+            {
+                enumValue2 = keyNotifications2[i].enumValue;
+
+                if ((building.m_problems & enumValue2).IsNotNone)
+                {
+                    sprites.Add(keyNotificationsNormal2[i].enumName);
                 }
             }
 
@@ -112,26 +128,38 @@ namespace WatchIt.Managers
         {
             List<string> sprites = new List<string>();
 
-            Notification.Problem enumValue;
+            Notification.Problem1 enumValue1;
 
-            for (int i = 0; i < keyNotifications.Length; i++)
+            for (int i = 0; i < keyNotifications1.Length; i++)
             {
-                enumValue = keyNotifications[i].enumValue;
+                enumValue1 = keyNotifications1[i].enumValue;
 
-                if ((netNode.m_problems & enumValue) != 0)
+                if ((netNode.m_problems & enumValue1).IsNotNone)
                 {
-                    if ((netNode.m_problems & Notification.Problem.FatalProblem) != 0)
+                    if ((netNode.m_problems & Notification.Problem1.FatalProblem).IsNotNone)
                     {
-                        sprites.Add(keyNotificationsFatal[i].enumName);
+                        sprites.Add(keyNotificationsFatal1[i].enumName);
                     }
-                    else if ((netNode.m_problems & Notification.Problem.MajorProblem) != 0)
+                    else if ((netNode.m_problems & Notification.Problem1.MajorProblem).IsNotNone)
                     {
-                        sprites.Add(keyNotificationsMajor[i].enumName);
+                        sprites.Add(keyNotificationsMajor1[i].enumName);
                     }
                     else
                     {
-                        sprites.Add(keyNotificationsNormal[i].enumName);
+                        sprites.Add(keyNotificationsNormal1[i].enumName);
                     }
+                }
+            }
+
+            Notification.Problem2 enumValue2;
+
+            for (int i = 0; i < keyNotifications2.Length; i++)
+            {
+                enumValue2 = keyNotifications2[i].enumValue;
+
+                if ((netNode.m_problems & enumValue2).IsNotNone)
+                {
+                    sprites.Add(keyNotificationsNormal2[i].enumName);
                 }
             }
 
@@ -142,26 +170,38 @@ namespace WatchIt.Managers
         {
             List<string> sprites = new List<string>();
 
-            Notification.Problem enumValue;
+            Notification.Problem1 enumValue1;
 
-            for (int i = 0; i < keyNotifications.Length; i++)
+            for (int i = 0; i < keyNotifications1.Length; i++)
             {
-                enumValue = keyNotifications[i].enumValue;
+                enumValue1 = keyNotifications1[i].enumValue;
 
-                if ((netSegment.m_problems & enumValue) != 0)
+                if ((netSegment.m_problems & enumValue1).IsNotNone)
                 {
-                    if ((netSegment.m_problems & Notification.Problem.FatalProblem) != 0)
+                    if ((netSegment.m_problems & Notification.Problem1.FatalProblem).IsNotNone)
                     {
-                        sprites.Add(keyNotificationsFatal[i].enumName);
+                        sprites.Add(keyNotificationsFatal1[i].enumName);
                     }
-                    else if ((netSegment.m_problems & Notification.Problem.MajorProblem) != 0)
+                    else if ((netSegment.m_problems & Notification.Problem1.MajorProblem).IsNotNone)
                     {
-                        sprites.Add(keyNotificationsMajor[i].enumName);
+                        sprites.Add(keyNotificationsMajor1[i].enumName);
                     }
                     else
                     {
-                        sprites.Add(keyNotificationsNormal[i].enumName);
+                        sprites.Add(keyNotificationsNormal1[i].enumName);
                     }
+                }
+            }
+
+            Notification.Problem2 enumValue2;
+
+            for (int i = 0; i < keyNotifications2.Length; i++)
+            {
+                enumValue2 = keyNotifications2[i].enumValue;
+
+                if ((netSegment.m_problems & enumValue2).IsNotNone)
+                {
+                    sprites.Add(keyNotificationsNormal2[i].enumName);
                 }
             }
 
@@ -194,8 +234,6 @@ namespace WatchIt.Managers
                 NetNodesWithProblems.Clear();
                 NetSegmentsWithProblems.Clear();
 
-                Notification.Problem problems;
-
                 BuildingManager buildingManager = Singleton<BuildingManager>.instance;
                 Building building;
 
@@ -203,13 +241,11 @@ namespace WatchIt.Managers
                 {
                     building = buildingManager.m_buildings.m_buffer[i];
 
-                    problems = building.m_problems;
-
-                    if (problems != Notification.Problem.None)
+                    if (building.m_problems.IsNotNone)
                     {
                         if (buildingManager.m_buildings.m_buffer[i].m_flags != Building.Flags.None)
                         {
-                            UpdateProblemTypes(SourceType.Building, problems);
+                            UpdateProblemTypes(SourceType.Building, building.m_problems);
                             BuildingsWithProblems.Add(i);
                         }
                     }
@@ -223,13 +259,11 @@ namespace WatchIt.Managers
                 {
                     netNode = netManager.m_nodes.m_buffer[i];
 
-                    problems = netNode.m_problems;
-
-                    if (problems != Notification.Problem.None)
+                    if (netNode.m_problems.IsNotNone)
                     {
                         if (netManager.m_nodes.m_buffer[i].m_flags != NetNode.Flags.None && (netManager.m_nodes.m_buffer[i].m_flags & NetNode.Flags.Temporary) == 0)
                         {
-                            UpdateProblemTypes(SourceType.Network, problems);
+                            UpdateProblemTypes(SourceType.Network, netNode.m_problems);
                             NetNodesWithProblems.Add(i);
                         }
                     }
@@ -239,13 +273,11 @@ namespace WatchIt.Managers
                 {
                     netSegment = netManager.m_segments.m_buffer[i];
 
-                    problems = netSegment.m_problems;
-
-                    if (problems != Notification.Problem.None)
+                    if (netSegment.m_problems.IsNotNone)
                     {
                         if (netManager.m_segments.m_buffer[i].m_flags != NetSegment.Flags.None)
                         {
-                            UpdateProblemTypes(SourceType.Network, problems);
+                            UpdateProblemTypes(SourceType.Network, netSegment.m_problems);
                             NetSegmentsWithProblems.Add(i);
                         }
                     }
@@ -262,36 +294,49 @@ namespace WatchIt.Managers
             }
         }
 
-        private void UpdateProblemTypes(SourceType sourceType, Notification.Problem problems)
+        private void UpdateProblemTypes(SourceType sourceType, Notification.ProblemStruct problems)
         {
             try
             {
-                Notification.Problem enumValue;
+                Notification.Problem1 enumValue1;
+                Notification.Problem2 enumValue2;
 
-                for (int i = 0; i < keyNotifications.Length; i++)
+                for (int i = 0; i < keyNotifications1.Length; i++)
                 {
-                    enumValue = keyNotifications[i].enumValue;
+                    enumValue1 = keyNotifications1[i].enumValue;
 
-                    if ((problems & enumValue) != 0)
+                    if ((problems.m_Problems1 & enumValue1) != 0)
                     {
-                        if ((problems & Notification.Problem.FatalProblem) != 0)
+                        if ((problems.m_Problems1 & Notification.Problem1.FatalProblem) != 0)
                         {
-                            string sprite = keyNotificationsFatal[i].enumName;
+                            string sprite = keyNotificationsFatal1[i].enumName;
 
                             AddOrUpdateProblemType(sourceType, sprite);
                         }
-                        else if ((problems & Notification.Problem.MajorProblem) != 0)
+                        else if ((problems.m_Problems1 & Notification.Problem1.MajorProblem) != 0)
                         {
-                            string sprite = keyNotificationsMajor[i].enumName;
+                            string sprite = keyNotificationsMajor1[i].enumName;
 
                             AddOrUpdateProblemType(sourceType, sprite);
                         }
                         else
                         {
-                            string sprite = keyNotificationsNormal[i].enumName;
+                            string sprite = keyNotificationsNormal1[i].enumName;
 
                             AddOrUpdateProblemType(sourceType, sprite);
                         }
+                    }
+                }
+
+                for (int i = 0; i < keyNotifications2.Length; i++)
+                {
+                    enumValue2 = keyNotifications2[i].enumValue;
+
+                    if ((problems.m_Problems2 & enumValue2) != 0)
+                    {
+                        string sprite = keyNotificationsNormal2[i].enumName;
+
+                        AddOrUpdateProblemType(sourceType, sprite);
                     }
                 }
             }

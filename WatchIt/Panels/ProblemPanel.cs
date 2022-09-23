@@ -203,7 +203,6 @@ namespace WatchIt.Panels
                 _tabstrip.AddTab("Buildings", _templateButton, true);
                 _tabstrip.selectedIndex = 0;
                 panel = _tabstrip.tabContainer.components[0] as UIPanel;
-
                 if (panel != null)
                 {
 
@@ -310,6 +309,7 @@ namespace WatchIt.Panels
                 Debug.Log("[Watch It!] ProblemPanel:CreateProblems -> Exception: " + e.Message);
             }
         }
+
         private void UpdateProblems()
         {
             try
