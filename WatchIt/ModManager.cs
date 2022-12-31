@@ -83,7 +83,7 @@ namespace WatchIt
                 if (_timer > ModConfig.Instance.RefreshInterval)
                 {
                     _timer -= ModConfig.Instance.RefreshInterval;
-                    
+
                     if (!ProblemManager.Instance.IsUpdatingData)
                     {
                         ProblemManager.Instance.UpdateData();

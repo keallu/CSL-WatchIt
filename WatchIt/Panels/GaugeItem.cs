@@ -505,7 +505,6 @@ namespace WatchIt.Panels
                     case "ElementarySchool":
                         capacity = district.GetEducation1Capacity();
                         need = district.GetEducation1Need();
-                        need = district.GetEducation1Need();
                         break;
                     case "HighSchool":
                         capacity = district.GetEducation2Capacity();
@@ -580,7 +579,7 @@ namespace WatchIt.Panels
             {
                 return 0;
             }
-            return 100;
+            return 0;
         }
 
         private string GetAspectSpriteName(int percentage)
